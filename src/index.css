@@ -1,0 +1,109 @@
+/* In App.css or any other CSS file */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.app-bar
+{
+  background-color: #ffffff;
+  padding-left: 20px;
+  padding-right: 20px;  
+  border: 1px solid #eeeeee;
+}
+
+.logo
+{
+  height: 50px;
+  width: auto;
+}
+
+
+.main-body
+{
+  padding-top: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.featured-products-section
+{
+  margin-top: 25px;
+}
+
+.heading-1
+{
+  font-optical-sizing: auto;
+  font-size: 40px;
+  font-family: "Cinzel", serif;
+  font-weight: 500;
+  font-style: normal;
+  word-spacing: 10px;
+  color: #5c3400;
+}
+
+.productCard
+{
+  width: 250px;
+  height: auto;
+}
+
+.cardImage
+{
+  width: 100%; /* Fit the width of the container */
+  aspect-ratio: 1 / 1; /* Maintain a square aspect ratio */
+  object-fit: cover; /* Ensures the image covers the entire area while maintaining its aspect ratio */
+  display: block; /* Removes any unwanted spacing under the image */
+  margin-bottom: 10px;
+}
+
+.categoriesList
+{
+  margin-top: 30px;
+}
+
+
+.heading-small
+{
+  font-optical-sizing: auto;
+  font-size: 25px;
+  font-family: "Cinzel", serif;
+  font-weight: 500;
+  font-style: normal;
+  word-spacing: 10px;
+  color: #5c3400;
+  margin: 0;
+}
+
+.heading-medium
+{
+  font-optical-sizing: auto;
+  font-size: 40px;
+  font-family: "Cinzel", serif;
+  font-weight: 500;
+  font-style: normal;
+  word-spacing: 10px;
+  color: #5c3400;
+  margin: 0;
+}
+
+.about
+{
+  background-color: #ffb85b;
+  padding: 20px;
+}
+
+
+.about-heading
+{
+  font-size: 20px;
+  margin: 15px;
+  display: block;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
