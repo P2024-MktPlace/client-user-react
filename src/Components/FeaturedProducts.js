@@ -5,14 +5,8 @@ import ProductCard from './ProductCard';
 function FeaturedProducts() {
   return (
     <div className="featured-products-section">
-      <Grid container spacing={3}>
-        <Grid item xs></Grid>
-        <Grid item xs={6} textAlign={'center'}>
-          <span className="heading-1">Featured Products</span>
-        </Grid>
-        <Grid item xs textAlign={'end'}>
-          <span>More...</span>
-        </Grid>
+      <Grid item textAlign={'center'}>
+        <span className="heading-1">Featured Products</span>
       </Grid>
 
       <Box sx={{ flexGrow: 1, p: 2 }}>

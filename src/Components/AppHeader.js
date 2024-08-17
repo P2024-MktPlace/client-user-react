@@ -1,22 +1,24 @@
-import Box from '@mui/material/Box';
 import React, { useState } from 'react';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Badge from '@mui/material/Badge';
+import Drawer from '@mui/material/Drawer';
+import { styled, alpha } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
 import Autocomplete from '@mui/material/Autocomplete';
+import cartDetails from './cartProducts'; // Ensure you have the correct import path
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha('#000000', 0.05), // Change the background color here
+  backgroundColor: alpha('#000000', 0.05),
   '&:hover': {
-    backgroundColor: alpha('#000000', 0.07), // Change the hover background color here
+    backgroundColor: alpha('#000000', 0.07),
   },
   marginLeft: 0,
   width: '100%',
@@ -40,7 +42,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(1)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
@@ -52,12 +53,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-// Custom styling to hide the scrollbar
 const StyledAutocomplete = styled(Autocomplete)({
   '& .MuiAutocomplete-listbox': {
-    scrollbarWidth: 'none', // Firefox
+    scrollbarWidth: 'none',
     '&::-webkit-scrollbar': {
-      display: 'none', // WebKit browsers
+      display: 'none',
     },
   },
 });
@@ -74,6 +74,11 @@ const top100Films = [
 
 function ResponsiveAppBar() {
   const [inputValue, setInputValue] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
 
   return (
     <div position="static" className="app-bar">
@@ -125,11 +130,15 @@ function ResponsiveAppBar() {
                 size="medium"
                 aria-label="show 17 new notifications"
                 color="inherit"
+                onClick={toggleDrawer(true)}
               >
                 <Badge badgeContent={17} color="error">
                   <ShoppingCartIcon />
                 </Badge>
               </IconButton>
+              <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+                {cartDetails()}
+              </Drawer>
               <IconButton
                 size="large"
                 aria-label="show 17 new notifications"

@@ -107,3 +107,55 @@ body {
   display: block;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
+
+.prouct_title
+{
+  font-size: 20px;
+  display: block;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+.category
+{
+  font-size: 12px;
+  display: block;
+  font-weight: 600;
+  color: #383838;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+.divider
+{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  display: block;
+}
+
+.button-vertical
+{
+  margin-top: 10px;
+  border-color: #ff1c1c;
+}
+
+.product-image-slide
+{
+  height: 400px;
+  aspect-ratio: 1 / 1; /* Maintain a square aspect ratio */
+  object-fit: cover; /* Ensures the image covers the entire area while maintaining its aspect ratio */
+  display: block; /* Removes any unwanted spacing under the image */
+  margin-bottom: 10px;
+}
+
+.product-price
+{
+  font-size: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display:  block; 
+}
+
+.product-desc
+{
+  font-size: 12px;
+  display:  block; 
+}
