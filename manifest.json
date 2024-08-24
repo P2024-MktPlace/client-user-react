@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "My Extension",
+  "version": "1.0",
+  "description": "An extension that interacts with Firebase API.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "https://jobnotification-4ecf7-default-rtdb.firebaseio.com"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  }
+}

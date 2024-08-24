@@ -5,6 +5,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Breadcrumbs,
   Button,
   MenuItem,
   TextField,
@@ -12,11 +13,35 @@ import {
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { CCarousel, CCarouselItem, CImage } from '@coreui/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Link from '@mui/material/Link';
 
 function ProductDetails() {
   console.log('Hello');
+
+  const [item, setItem] = useState([]);
+  console.log('Loading featured prod');
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(
+          'https://jobnotification-4ecf7-default-rtdb.firebaseio.com/product.json'
+        );
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log(data);
+        setItem(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const [quantity, setQuantity] = useState(1); // Default quantity is 1
 
@@ -24,26 +49,27 @@ function ProductDetails() {
     setQuantity(event.target.value);
   };
 
-  const carouselItems = [
-    {
-      src: 'https://www.giva.co/cdn/shop/files/PX007_pre_large.jpg',
-      alt: 'slide 1',
-    },
-    {
-      src: 'https://www.giva.co/cdn/shop/products/silver_couple.jpg',
-      alt: 'slide 2',
-    },
-    {
-      src: 'https://www.giva.co/cdn/shop/files/customisedsilver-min.jpg',
-      alt: 'slide 3',
-    },
-    {
-      src: 'https://www.giva.co/cdn/shop/files/Openfile_customisedcopy_5_5_5-min.jpg',
-    },
-  ];
+  // const carouselItems = productImages.map((url, index) => ({
+  //   src: url,
+  //   alt: `slide ${index + 1}`,
+  // }));
 
   return (
     <div>
+      <Box mb={2}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link underline="hover" color="inherit" href="/">
+            {item.category}
+          </Link>
+          <Link
+            underline="hover"
+            color="inherit"
+            href="/material-ui/getting-started/installation/"
+          >
+            {item.sub_category}
+          </Link>
+        </Breadcrumbs>
+      </Box>
       <Grid container spacing={2}>
         <Grid className="product_image" item xs={5}>
           <Box
@@ -57,32 +83,29 @@ function ProductDetails() {
               controls
               transition="crossfade"
             >
-              {carouselItems.map((item, index) => (
-                <CCarouselItem key={index}>
-                  <CImage
-                    className="d-block w-100"
-                    src={item.src}
-                    alt={item.alt}
-                  />
-                </CCarouselItem>
-              ))}
+              <CCarouselItem>
+                <CImage
+                  className="d-block w-100"
+                  src="https://dummyimage.com/500x600/ffff00/000"
+                  alt="https://dummyimage.com/500x600/ffff00/000"
+                />
+              </CCarouselItem>
             </CCarousel>
           </Box>
         </Grid>
 
         <Grid className="product_details" item xs={7}>
           <Box mb={2}>
-            <span className="prouct_title">
-              The Lovestruck Couple Rose Gold Pendant With Link Chain
-            </span>
-            <span className="category">Chains</span>
+            <span className="product_id">{item.product_id}</span>
+            <span className="product_title">{item.product_title}</span>
           </Box>
 
           <Divider className="divider" component="div" role="presentation" />
 
           <Box sx={{ alignItems: 'center' }} mt={2}>
-            <span className="product-price">MRP : ₹ 85,000</span>
-            <span className="product-desc">Incl. of all taxes</span>
+            <span className="product_description">
+              {item.product_description}
+            </span>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center' }} mb={2}>
@@ -103,27 +126,12 @@ function ProductDetails() {
             </TextField>
           </Box>
           <Divider className="divider" component="div" role="presentation" />
-          <Box>
-            <Button
-              sx={{ m: 2 }}
-              className="button-vertical"
-              variant="contained"
-            >
-              Add to Cart
-            </Button>
-            <Button
-              sx={{ m: 2 }}
-              className="button-vertical"
-              variant="outlined"
-              startIcon={<FavoriteBorderIcon />}
-            >
-              Add to wishlist
-            </Button>
+
+          <Box mt={2}>
+            <Button variant="contained">Add to cart</Button>
           </Box>
         </Grid>
       </Grid>
-
-      <Divider className="divider" component="div" role="presentation" />
 
       <Box mt={2}>
         <Grid item textAlign={'center'}>

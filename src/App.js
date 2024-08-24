@@ -1,37 +1,36 @@
 import './App.css';
 import Stack from '@mui/material/Stack';
-import { Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import ResponsiveAppBar from './Components/AppHeader';
 import IntroSlider from './Components/IntoSlider';
 import FeaturedProducts from './Components/FeaturedProducts';
 import CategoryList from './Components/CategoriesList';
 import About from './Components/About';
 import ProductDetails from './Components/ProductDetails';
+import { Box } from '@mui/material';
 
 function App() {
+  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <div className="App">
-      <Stack spacing={2}>
+      <Stack spacing={0}>
         <ResponsiveAppBar />
-        <div className="main-body">
+        <Box>
           <Routes>
             <Route
-              path="/client-user-react/"
+              path="/"
               element={
                 <Stack spacing={2}>
                   <IntroSlider />
                   <CategoryList />
                   <FeaturedProducts />
-                  <About />
+                  {/* <About /> */}
                 </Stack>
               }
             />
-            <Route
-              path="/client-user-react/product/:id"
-              element={<ProductDetails />}
-            />
+            <Route path="/product/:id" element={<ProductDetails />} />
           </Routes>
-        </div>
+        </Box>
       </Stack>
     </div>
   );

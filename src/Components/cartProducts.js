@@ -1,45 +1,57 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+
+import { Button, Divider, Grid } from '@mui/material';
 
 function cartDetails() {
   return (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+    <div>
+      <Box sx={{ width: 350 }} p={3} role="presentation">
+        <span className="product_title">My cart</span>
+      </Box>
+
+      <Divider className="divider" component="div" role="presentation" />
+
+      <Box p={2}>
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <span>Subtotal</span>
+          </Grid>
+          <Grid item xs={4} textAlign={'end'}>
+            <span>Rs. 150</span>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <span>Shipping charges</span>
+          </Grid>
+          <Grid item xs={4} textAlign={'end'}>
+            <span>Rs. 150</span>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Divider className="divider" component="div" role="presentation" />
+
+      <Box p={2}>
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <span>Total</span>
+          </Grid>
+          <Grid item xs={4} textAlign={'end'}>
+            <span>Rs. 300</span>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Divider className="divider" component="div" role="presentation" />
+
+      <Box p={2} className="fullwidth">
+        <Button variant="contained" className="fullwidth" disableElevation>
+          Proceed to checkout
+        </Button>
+      </Box>
+    </div>
   );
 }
 
