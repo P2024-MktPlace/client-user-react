@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import ProductCard from './ProductCard';
 import React, { useState, useEffect } from 'react';
+import BASE_API_URL from '../config';
 
 function FeaturedProducts() {
   const [products, setProducts] = useState([]);
@@ -10,9 +11,7 @@ function FeaturedProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          'https://jobnotification-4ecf7-default-rtdb.firebaseio.com/products.json'
-        );
+        const response = await fetch(BASE_API_URL + '/all_products');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

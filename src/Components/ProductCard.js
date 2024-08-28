@@ -1,34 +1,86 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import { Box, ButtonBase, Grid, Stack } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-// import { useCart } from './CartContext'; // Import CartContext
-// import { useAuth } from './AuthContext'; // Import AuthContext
+import axios from 'axios';
+import BASE_API_URL from '../config'; // Ensure this points to the correct config file
+
+import AuthModal from './AuthModal'; // Import the modal component
 
 const ProductCard = ({ item }) => {
-  // const { addToCart } = useCart(); // Access the addToCart function from CartContext
-  // const { userLoggedIn, openAuthModal } = useAuth(); // Access authentication status and modal function
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
-  const discountAmount = (item.price * item.discount) / 100;
-  const discountedPrice = item.price - discountAmount;
+  useEffect(() => {
+    checkUserLoggedIn();
+  }, []);
 
-  // // Handler for opening the product page
+  const checkUserLoggedIn = () => {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (token) {
+      // POST request to verify token
+      axios
+        .post(BASE_API_URL + '/verify', { token })
+        .then((response) => {
+          console.log(response);
+          setUserLoggedIn(true);
+          setLoading(false);
+        })
+        .catch((err) => {
+          // Handle error and stop loading
+          setError(err.message);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+      setUserLoggedIn(false);
+    }
+  };
+
+  const handleAddToCart = (event) => {
+    event.stopPropagation(); // Prevents the event from bubbling up to the card
+
+    if (!userLoggedIn) {
+      setAuthModalOpen(true);
+    } else {
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+      axios
+        .post(BASE_API_URL + '/add_to_cart', {
+          token,
+          product_id: item.product_id,
+          quantity: 1,
+        })
+        .then((response) => {
+          console.log(response);
+          setUserLoggedIn(true);
+          setLoading(false);
+        })
+        .catch((err) => {
+          // Handle error and stop loading
+          setError(err.message);
+          setLoading(false);
+        });
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    // Update the userLoggedIn state and close the auth modal
+    setUserLoggedIn(true);
+    setAuthModalOpen(false);
+  };
+
   const openProduct = () => {
     window.location.href = `product/${item.id}`;
   };
 
-  // // Handler for adding the product to the cart
-  // const handleAddToCart = (event) => {
-  //   event.stopPropagation(); // Prevents the event from bubbling up to the card
-
-  //   if (!userLoggedIn) {
-  //     openAuthModal(); // Open authentication modal if user is not logged in
-  //   } else {
-  //     addToCart(item); // Add item to cart if user is logged in
-  //   }
-  // };
+  const discountAmount = (item.price * item.discount) / 100;
+  const discountedPrice = item.price - discountAmount;
 
   return (
     <Card
@@ -43,19 +95,12 @@ const ProductCard = ({ item }) => {
     >
       <img
         className="cardImage"
-        src={
-          item.image ||
-          'https://kinclimg5.bluestone.com/f_webp,c_scale,w_176,b_rgb:f0f0f0/giproduct/BIDG0103R181_YAA18DIG6XXXXXXXX_ABCD00-PICS-00000-1024-27776.png'
-        }
-        srcSet={
-          item.image ||
-          'https://kinclimg5.bluestone.com/f_webp,c_scale,w_176,b_rgb:f0f0f0/giproduct/BIDG0103R181_YAA18DIG6XXXXXXXX_ABCD00-PICS-00000-1024-27776.png'
-        }
+        src=""
+        srcSet=""
         loading="lazy"
-        alt=""
+        alt={item.product_title}
         onClick={openProduct} // Open product on image click
       />
-
       <Grid container sx={{ p: 1 }} alignItems="center">
         <Grid item xs={10}>
           <Box>
@@ -89,7 +134,7 @@ const ProductCard = ({ item }) => {
 
               <ButtonBase
                 className="add-to-cart"
-                //onClick={handleAddToCart} // Updated click handler
+                onClick={handleAddToCart} // Updated click handler
                 sx={{
                   padding: '4px', // Adjust padding here
                   borderRadius: '5px', // Match with CSS if needed
@@ -109,6 +154,11 @@ const ProductCard = ({ item }) => {
           </Box>
         </Grid>
       </Grid>
+      <AuthModal
+        open={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </Card>
   );
 };
