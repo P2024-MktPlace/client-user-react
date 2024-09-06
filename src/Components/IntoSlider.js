@@ -1,30 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CCarousel, CImage, CCarouselItem } from '@coreui/react';
 import '@coreui/coreui/dist/css/coreui.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import BASE_API_URL from '../config';
 
 function IntroSlider() {
-  console.log('done');
+  const [carouselItems, setCarouselItems] = useState([]);
 
-  const carouselItems = [
-    {
-      src: 'https://dummyimage.com/1200x400/1776cc/fff',
-      alt: 'slide 1',
-    },
-    {
-      src: 'https://dummyimage.com/1200x400/5966cc/fff',
-      alt: 'slide 2',
-    },
-    {
-      src: 'https://dummyimage.com/1200x400/9966cc/fff',
-      alt: 'slide 3',
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(BASE_API_URL + '/active_ads'); // Replace with your API endpoint
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setCarouselItems(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <CCarousel controls transition="crossfade">
       {carouselItems.map((item, index) => (
         <CCarouselItem key={index}>
-          <CImage className="w-100" src={item.src} alt={item.alt} />
+          <CImage className="w-100" src={item.image_url} alt={item.image_url} />
         </CCarouselItem>
       ))}
     </CCarousel>

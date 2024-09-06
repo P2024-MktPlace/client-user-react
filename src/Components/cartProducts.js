@@ -4,11 +4,19 @@ import { Button, Divider, Grid, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import BASE_API_URL from '../config';
 import CartItem from './CartItem';
+import { useNavigate } from 'react-router-dom';
 
 function CartDetails() {
   const [cartData, setCartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Inside your component
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/checkout');
+  };
 
   useEffect(() => {
     const fetchCartDetails = async () => {
@@ -118,7 +126,12 @@ function CartDetails() {
       <Divider className="divider" component="div" role="presentation" />
 
       <Box p={2} className="fullwidth">
-        <Button variant="contained" className="fullwidth" disableElevation>
+        <Button
+          variant="contained"
+          className="fullwidth"
+          disableElevation
+          onClick={handleClick}
+        >
           Proceed to Checkout
         </Button>
       </Box>

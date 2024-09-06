@@ -9,6 +9,8 @@ import About from './Components/About';
 import ProductDetails from './Components/ProductDetails';
 import { Box } from '@mui/material';
 import CartItem from './Components/CartItem';
+import CheckoutPage from './Components/CheckoutPage';
+import NewArrivals from './Components/NewArrivals';
 
 function App() {
   // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -25,11 +27,13 @@ function App() {
                   <IntroSlider />
                   <CategoryList />
                   <FeaturedProducts />
+                  <NewArrivals />
                   {/* <About /> */}
                 </Stack>
               }
             />
             <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
           </Routes>
         </Box>
       </Stack>

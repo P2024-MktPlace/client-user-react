@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import BASE_API_URL from '../config';
 import FeaturedCard from './FeaturedCard';
 
-function FeaturedProducts() {
+function NewArrivals() {
   const [products, setProducts] = useState([]);
   console.log('Loading featured prod');
 
@@ -30,8 +30,8 @@ function FeaturedProducts() {
   return (
     <div className="featured-products-section">
       <Grid item xs={6} textAlign={'center'} mb={3}>
-        <p className="heading-small">Featured</p>
-        <p className="heading-medium">Products</p>
+        <p className="heading-small">New</p>
+        <p className="heading-medium">Arrivals</p>
       </Grid>
 
       <Box
@@ -66,4 +66,4 @@ function FeaturedProducts() {
   );
 }
 
-export default FeaturedProducts;
+export default NewArrivals;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -10,13 +10,21 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
+  Stack,
+  Divider,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-function CartItem() {
+const CartItem = ({ item }) => {
   const [count, setCount] = useState(1); // Default count is 1
   const [openDialog, setOpenDialog] = useState(false);
+  const [thumbnail, setThumbnail] = useState('');
+
+  useEffect(() => {
+    setThumbnail(item.thumbnail.split(',')[0]);
+  }, [item.thumbnail]);
 
   const handleIncrement = () => setCount(count + 1);
 
@@ -42,41 +50,51 @@ function CartItem() {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        border: '1px solid #ddd',
-        borderRadius: 2,
-        p: 1,
-        mb: 2,
-      }}
-    >
-      {/* Image Section */}
-      <Box
-        sx={{
-          flexShrink: 0,
-          width: 50,
-          height: 50,
-          backgroundImage: `url('https://via.placeholder.com/100')`, // Placeholder image
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          borderRadius: 1,
-        }}
-      />
+    <Box sx={{ border: '1px solid #ddd', borderRadius: 2, p: 1, mb: 2 }}>
+      <Stack>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          {/* Image Section */}
+          <img
+            src={thumbnail}
+            alt={item.product_title}
+            style={{
+              flexShrink: 0,
+              width: 60,
+              height: 60,
+              objectFit: 'cover',
+              objectPosition: 'center',
+              borderRadius: '4px',
+            }}
+          />
+          {/* Middle Section */}
+          <Box sx={{ flexGrow: 1, ml: 2 }}>
+            <span>{item.product_id}</span>
+            <span className="item-name">{item.product_title}</span>
 
-      {/* Middle Section */}
-      <Box sx={{ flexGrow: 1 }} ml={1}>
-        <span className="item-title">Sample Product</span>
-        <span className="item-price">Category Name</span>
-      </Box>
-
-      {/* Right Section */}
-      <Box sx={{ textAlign: 'center' }}>
-        <span variant="h6" sx={{ mb: 1 }}>
-          $29.99
-        </span>
-        {/* <Box
+            {/* <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          {item.product_title}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          {item.category}
+        </Typography> */}
+            {/* <Typography variant="body2" color="error">
+          only 1 Left
+        </Typography> */}
+          </Box>
+          {/* Right Section */}
+          <Box sx={{ textAlign: 'right' }}>
+            <IconButton size="small" aria-label="remove">
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+            {/* <Typography variant="h6" sx={{ mt: 1, mb: 1 }}>
+          ₹{item.price}
+        </Typography>
+        <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -84,16 +102,15 @@ function CartItem() {
           }}
         >
           <IconButton onClick={handleDecrement} aria-label="decrement">
-            <RemoveIcon fontSize="3" />
+            <RemoveIcon fontSize="small" />
           </IconButton>
-          <Chip label={count} />
+          <Chip label={count} sx={{ mx: 1 }} />
           <IconButton onClick={handleIncrement} aria-label="increment">
-            <AddIcon fontSize="3" />
+            <AddIcon fontSize="small" />
           </IconButton>
         </Box> */}
-      </Box>
-
-      {/* Confirmation Dialog */}
+          </Box>
+          {/* Confirmation Dialog
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Removal</DialogTitle>
         <DialogContent>
@@ -109,9 +126,19 @@ function CartItem() {
             Remove
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+        </Box>
+        <Box
+          className="bt"
+          mt={1}
+          sx={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <span>Quantity: {item.quantity}</span>
+          <span>Rs. 300</span>
+        </Box>
+      </Stack>
     </Box>
   );
-}
+};
 
 export default CartItem;
