@@ -1,89 +1,50 @@
-import {
-  Box,
-  Stack,
-  Typography,
-  IconButton,
-  TextField,
-  Paper,
-  Button,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import React, { useState } from 'react';
+import { Box, Paper } from '@mui/material';
+import React from 'react';
 
-function CartCard() {
-  const [quantity, setQuantity] = useState(1);
-
-  const handleIncrement = () => setQuantity((prev) => prev + 1);
-  const handleDecrement = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
+const CartCard = ({ item }) => {
   return (
-    <Paper
-      sx={{
-        borderRadius: 2,
-        padding: 1,
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-      }}
-    >
-      {/* Image Section */}
-      <Box
+    <Box mt={2}>
+      <Paper
         sx={{
-          flex: 1,
+          borderRadius: 2,
           padding: 1,
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center',
+          width: '100%',
         }}
       >
-        <img
-          src="https://via.placeholder.com/80"
-          alt="Product"
-          style={{ borderRadius: '8px', width: '100%', maxWidth: '80px' }}
-        />
-      </Box>
+        {/* Image Section */}
+        <Box
+          sx={{
+            flex: 1,
+            padding: 1,
+            display: 'flex',
+            justifyContent: 'left',
+            alignItems: 'center',
+          }}
+        >
+          <img
+            src={item.thumbnail.split(',')[0]}
+            alt={item.product_title}
+            style={{
+              borderRadius: '8px',
+              width: '60px',
+              height: '60px',
+              objectFit: 'cover', // Ensures the image covers the area without distortion
+            }}
+          />
+        </Box>
 
-      {/* Product Info Section */}
-      <Box sx={{ flex: 3 }}>
-        <span className="item-name">Cardigan</span>
-        <Typography variant="body2" color="textSecondary">
-          Category
-        </Typography>
-      </Box>
-
-      {/* Quantity Section */}
-      <Box
-        sx={{
-          flex: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <IconButton onClick={handleDecrement}>
-          <RemoveIcon />
-        </IconButton>
-        <TextField
-          size="small"
-          type="number"
-          value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-          inputProps={{ min: 1, max: 10 }}
-          sx={{ width: 60, textAlign: 'right' }}
-        />
-        <IconButton onClick={handleIncrement}>
-          <AddIcon />
-        </IconButton>
-      </Box>
-
-      {/* Price Section */}
-      <Box sx={{ flex: 2, textAlign: 'right' }} p={2}>
-        <span className="checkout_price">Rs. 2,500.00</span>
-      </Box>
-    </Paper>
+        {/* Product Info Section */}
+        <Box sx={{ flex: 3 }}>
+          <span className="checkout_item-name">{item.product_title}</span>
+        </Box>
+        <Box sx={{ flex: 2, textAlign: 'right' }} p={2}>
+          <span className="checkout_price">Rs. {item.price} /-</span>
+        </Box>
+      </Paper>
+    </Box>
   );
-}
+};
 
 export default CartCard;

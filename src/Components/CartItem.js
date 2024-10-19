@@ -2,142 +2,172 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  Chip,
-  IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
   Stack,
-  Divider,
+  IconButton
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit'; // Import the Edit icon
+import AddIcon from '@mui/icons-material/Add'; // Importing Add Icon
+import RemoveIcon from '@mui/icons-material/Remove'; // Importing Remove Icon
+import BASE_API_URL from '../config';
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, onQuantityChangeSuccess }) => {
   const [count, setCount] = useState(1); // Default count is 1
-  const [openDialog, setOpenDialog] = useState(false);
   const [thumbnail, setThumbnail] = useState('');
+  const [quantity, setQuantity] = useState(item.quantity); // Set initial quantity from item
+  const [editModalOpen, setEditModalOpen] = useState(false); // State for modal
+
+  const handleIncrement = async () => {
+    const token = localStorage.getItem('token');
+    await fetch(BASE_API_URL + '/add_to_cart', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Include token in the headers
+      },
+      body: JSON.stringify({
+          product_id: item.product_id,
+          quantity: 1,
+          token: token,
+      })
+  });
+
+  onQuantityChangeSuccess();
+  };
+
+  const handleDecrement = async () => {
+    const token = localStorage.getItem('token');
+    await fetch(BASE_API_URL + '/add_to_cart', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Include token in the headers
+      },
+      body: JSON.stringify({
+          product_id: item.product_id,
+          quantity: -1,
+          token: token,
+      })
+  });
+  onQuantityChangeSuccess();
+  };
+
+  // Open modal when the box is clicked
+  const handleBoxClick = () => {
+    setEditModalOpen(true);
+  };
 
   useEffect(() => {
     setThumbnail(item.thumbnail.split(',')[0]);
   }, [item.thumbnail]);
 
-  const handleIncrement = () => setCount(count + 1);
-
-  const handleDecrement = () => {
-    if (count === 1) {
-      setOpenDialog(true); // Show confirmation dialog when count reaches 0
-    } else {
-      setCount(count - 1);
-    }
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-  const handleConfirmRemove = () => {
-    setOpenDialog(false);
-    // Implement the logic to remove the item from the cart here
-    // For demonstration, just log to console
-    console.log('Item removed from cart');
-    // Optionally, reset count or perform other actions
-    setCount(0);
-  };
-
   return (
-    <Box sx={{ border: '1px solid #ddd', borderRadius: 2, p: 1, mb: 2 }}>
-      <Stack>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          {/* Image Section */}
-          <img
-            src={thumbnail}
-            alt={item.product_title}
-            style={{
-              flexShrink: 0,
-              width: 60,
-              height: 60,
-              objectFit: 'cover',
-              objectPosition: 'center',
-              borderRadius: '4px',
-            }}
-          />
-          {/* Middle Section */}
-          <Box sx={{ flexGrow: 1, ml: 2 }}>
-            <span>{item.product_id}</span>
-            <span className="item-name">{item.product_title}</span>
+    <>
+      {item.quantity === 0 ? (
+        <div></div>
+      ) : (
+          <Box sx={{ border: '1px solid #ddd', borderRadius: 2 }}>
+            <Stack>
+              <Box m={1} sx={{ display: 'flex' }}>
+                <Box
+                  sx={{
+                    width: 80, // Ensure width and height are the same to maintain 1:1 aspect ratio
+                    height: 80,
+                    overflow: 'hidden',
+                    borderRadius: '4px',
+                    flexShrink: 0,
+                  }}
+                >
+                  <img
+                    src={thumbnail}
+                    alt={item.product_title}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center',
+                    }}
+                  />
+                </Box>
 
-            {/* <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-          {item.product_title}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {item.category}
-        </Typography> */}
-            {/* <Typography variant="body2" color="error">
-          only 1 Left
-        </Typography> */}
+                <Stack
+                  sx={{
+                    flexGrow: 1,
+                    ml: 1,
+                    display: 'flex', // Use flexbox layout
+                    flexDirection: 'column', // Align items in a column
+                    justifyContent: 'space-between', // Space out title and quantity
+                  }}
+                >
+                  <Typography
+                    className="item-title"
+                    variant="body1"
+                    sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, fontWeight: 'bold' }}
+                  >
+                    {item.product_title}
+                  </Typography>
+
+                 
+                </Stack>
+              </Box>
+
+              <Box className="bt">
+                <Box
+                  m={1}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: { xs: '0.8rem', sm: '1rem' },
+                  }}
+                >
+
+              <Box>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <span sx={{ fontSize: { xs: '0.7rem', sm: '0.9rem' } }}>Quantity :</span>
+
+                      {/* Box wrapper to apply border styling */}
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          border: '1px solid #ddd', // Border style
+                          borderRadius: '4px', // Rounded corners
+                          padding: '2px 8px', // Inner padding to space out elements
+                        }}
+                      >
+                        <IconButton size="small" onClick={handleDecrement} >
+                          <RemoveIcon fontSize="small" />
+                        </IconButton>
+                        <Typography style={{ fontSize: '0.9rem', margin: '0 4px' }}>{quantity}</Typography>
+                        <IconButton size="small" onClick={handleIncrement}>
+                          <AddIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </Stack>
+                  </Box>
+                  <Box>
+                    <div>
+                      {/* Box with edit icon */}
+                      <Box
+                        onClick={handleBoxClick}
+                        sx={{
+                          cursor: 'pointer', // Set cursor to pointer
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {/* Include edit icon here, e.g., <EditIcon /> */}
+                      </Box>
+                      {/* Modal Component */}
+                    </div>
+                  </Box>
+                  <span sx={{ fontSize: { xs: '0.7rem', sm: '0.9rem' } }}>Rs. {item.price}</span>
+                </Box>
+              </Box>
+            </Stack>
           </Box>
-          {/* Right Section */}
-          <Box sx={{ textAlign: 'right' }}>
-            <IconButton size="small" aria-label="remove">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-            {/* <Typography variant="h6" sx={{ mt: 1, mb: 1 }}>
-          ₹{item.price}
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <IconButton onClick={handleDecrement} aria-label="decrement">
-            <RemoveIcon fontSize="small" />
-          </IconButton>
-          <Chip label={count} sx={{ mx: 1 }} />
-          <IconButton onClick={handleIncrement} aria-label="increment">
-            <AddIcon fontSize="small" />
-          </IconButton>
-        </Box> */}
-          </Box>
-          {/* Confirmation Dialog
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Confirm Removal</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to remove this item from the cart?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmRemove} color="secondary">
-            Remove
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-        </Box>
-        <Box
-          className="bt"
-          mt={1}
-          sx={{ display: 'flex', justifyContent: 'space-between' }}
-        >
-          <span>Quantity: {item.quantity}</span>
-          <span>Rs. 300</span>
-        </Box>
-      </Stack>
-    </Box>
+
+      )}
+    </>
   );
 };
 

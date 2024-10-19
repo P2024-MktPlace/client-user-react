@@ -7,7 +7,6 @@ import FeaturedCard from './FeaturedCard';
 
 function NewArrivals() {
   const [products, setProducts] = useState([]);
-  console.log('Loading featured prod');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -17,7 +16,6 @@ function NewArrivals() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log(data);
         setProducts(data);
       } catch (error) {
         console.error('Error fetching products:', error);

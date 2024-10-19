@@ -6,11 +6,14 @@ import IntroSlider from './Components/IntoSlider';
 import FeaturedProducts from './Components/FeaturedProducts';
 import CategoryList from './Components/CategoriesList';
 import About from './Components/About';
-import ProductDetails from './Components/ProductDetails';
 import { Box } from '@mui/material';
+import ProductDetail from './Components/ProductDetail';
 import CartItem from './Components/CartItem';
 import CheckoutPage from './Components/CheckoutPage';
 import NewArrivals from './Components/NewArrivals';
+import MyAccount from './Components/MainPages/Account';
+import OrderStatus from './Components/MainPages/OrderStatus';
+import MyOrders from './Components/MainPages/MyOrders';
 
 function App() {
   // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -32,8 +35,11 @@ function App() {
                 </Stack>
               }
             />
-            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            {/* <Route path="/profile" element={<MyAccount />} /> */}
+            <Route path="/order" element={<OrderStatus />} />
+            <Route path="/myorders" element={<MyOrders />} />
           </Routes>
         </Box>
       </Stack>

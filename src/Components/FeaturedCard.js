@@ -13,7 +13,7 @@ const FeaturedCard = ({ item }) => {
     <Box>
       <ButtonBase
         component={Link}
-        to={`/product/id=${item.id}`}
+        to={`/product/id=${item.product_id}`}
         sx={{
           width: '100%',
           display: 'block',

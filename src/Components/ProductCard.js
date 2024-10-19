@@ -27,7 +27,6 @@ const ProductCard = ({ item }) => {
       axios
         .post(BASE_API_URL + '/verify', { token })
         .then((response) => {
-          console.log(response);
           setUserLoggedIn(true);
           setLoading(false);
         })
@@ -57,7 +56,6 @@ const ProductCard = ({ item }) => {
           quantity: 1,
         })
         .then((response) => {
-          console.log(response);
           setUserLoggedIn(true);
           setLoading(false);
         })

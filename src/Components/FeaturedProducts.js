@@ -1,13 +1,11 @@
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import ProductCard from './ProductCard';
 import React, { useState, useEffect } from 'react';
 import BASE_API_URL from '../config';
 import FeaturedCard from './FeaturedCard';
 
 function FeaturedProducts() {
   const [products, setProducts] = useState([]);
-  console.log('Loading featured prod');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -17,7 +15,6 @@ function FeaturedProducts() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log(data);
         setProducts(data);
       } catch (error) {
         console.error('Error fetching products:', error);

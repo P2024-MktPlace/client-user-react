@@ -8,12 +8,14 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { auth } from './firebase'; // Import Firebase auth
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import BASE_API_URL from '../config';
+import Token from './TokenContext'; // Import Token management
 
 const RECAPTCHA_SITE_KEY = '6LcFLy4qAAAAAHBYWsHCJY7ZLhaJIAadVki6gfD5'; // Replace with your reCAPTCHA site key
 const API_URL = BASE_API_URL; // Replace with your API endpoint
 
 const AuthModal = ({ open, onClose, onLoginSuccess }) => {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +35,7 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            name,
             email,
             phoneNumber,
             password,
@@ -40,7 +43,6 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
         });
         if (response.ok) {
           const data = await response.json();
-          console.log('Sign-up successful:', data);
           onClose(); // Close modal after successful sign-up
         } else {
           console.error('Error during sign-up:', response.statusText);
@@ -51,7 +53,7 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
         const user = auth.currentUser;
 
         if (user) {
-          // Retrieve token
+          // Retrieve token from Firebase user
           const idToken = await user.getIdToken();
 
           // Verify token with your API
@@ -72,8 +74,8 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
             if (data.status === 'FAILED') {
               alert('Username or password is incorrect.');
             } else {
-              // Store the token in localStorage and notify parent
-              localStorage.setItem('token', idToken);
+              // Store the token using the Token management
+              Token.setToken(idToken);
               onLoginSuccess(); // Notify parent component
               onClose(); // Close modal after successful sign-in
             }
@@ -104,16 +106,19 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 400,
+          width: 350,
           bgcolor: 'background.paper',
           borderRadius: 1,
           boxShadow: 24,
-          p: 4,
+          p: 3,
         }}
       >
         <Typography id="auth-modal-title" variant="h6" component="h2">
           {isSignUp ? 'Sign Up' : 'Sign In'}
         </Typography>
+
+
+
         <TextField
           margin="normal"
           required
@@ -123,6 +128,7 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
           autoFocus
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          sx={{mt:1}}
         />
         {isSignUp && (
           <TextField
@@ -133,8 +139,25 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
             autoComplete="tel"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
+            sx={{mt:1}}
           />
         )}
+
+      {isSignUp && (
+        <TextField
+        margin="normal"
+        required
+        fullWidth
+        label="Full Name"
+        autoComplete="name"
+        autoFocus
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        sx={{mt:1}}
+      />
+        )}
+
+
         <TextField
           margin="normal"
           required
@@ -144,16 +167,23 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          sx={{mt:1}}
         />
-        <ReCAPTCHA
-          sitekey={RECAPTCHA_SITE_KEY}
-          onChange={handleCaptchaChange}
+       <Box sx={{display: 'flex', justifyContent: 'center', width: '100%' }} mt={1}>
+        <ReCAPTCHA 
+          sitekey={RECAPTCHA_SITE_KEY} 
+          onChange={handleCaptchaChange} 
+          // style={{ width: '100%' }} // Make the ReCAPTCHA component full width
+          
         />
+      </Box>
+
         <Button
           type="button"
           fullWidth
           variant="contained"
           onClick={handleAuth}
+          sx={{mt:2}}
         >
           {isSignUp ? 'Sign Up' : 'Sign In'}
         </Button>

@@ -4,8 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import Token from './Components/TokenContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+Token.getToken();
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>

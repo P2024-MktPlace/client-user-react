@@ -7,45 +7,61 @@ import Avatar from '@mui/material/Avatar';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Badge from '@mui/material/Badge';
 import Drawer from '@mui/material/Drawer';
-import cartDetails from './cartProducts'; // Ensure you have the correct import path
-import AuthModal from './AuthModal'; // Import the modal component
+import Menu from '@mui/material/Menu'; // Import Menu
+import MenuItem from '@mui/material/MenuItem'; // Import MenuItem
+import CartDetails from './cartProducts';
+import AuthModal from './AuthModal';
 
 function ResponsiveAppBar() {
   const [open, setOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null); // State for menu
+  const openMenu = Boolean(anchorEl);
 
   useEffect(() => {
-    // Check if the user is logged in by checking if a token exists in localStorage or sessionStorage
-    const token =
-      localStorage.getItem('token') || sessionStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     setUserLoggedIn(!!token);
-  }, []);
+  }, [authModalOpen]);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
+  const closeModal = () => {
+    setOpen(false);
+  };
+
   const handleAddToCart = () => {
     if (!userLoggedIn) {
-      setAuthModalOpen(true); // Open the modal if user is not logged in
+      setAuthModalOpen(true);
     } else {
-      setOpen(true); // Open the cart drawer
+      setOpen(true);
     }
   };
 
-  const handleProfileClick = () => {
+  const handleProfileClick = (event) => {
     if (!userLoggedIn) {
-      setAuthModalOpen(true); // Open the modal if user is not logged in
+      setAuthModalOpen(true);
     } else {
-      setOpen(true); // Open the drawer (assuming you want to show the same drawer)
+      setAnchorEl(event.currentTarget); // Open menu
     }
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null); // Close menu
   };
 
   const handleLoginSuccess = () => {
-    // Update the userLoggedIn state and possibly close the auth modal
     setUserLoggedIn(true);
     setAuthModalOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    setUserLoggedIn(false);
+    handleMenuClose();
   };
 
   return (
@@ -58,7 +74,6 @@ function ResponsiveAppBar() {
       }}
     >
       <Grid container spacing={2} alignItems="center">
-        {/* Top Row for Logo, Cart, and Profile */}
         <Grid item xs={12}>
           <Stack
             direction="row"
@@ -81,12 +96,12 @@ function ResponsiveAppBar() {
                 color="inherit"
                 onClick={handleAddToCart}
               >
-                <Badge badgeContent={17} color="error">
+                <Badge color="error">
                   <ShoppingCartIcon />
                 </Badge>
               </IconButton>
               <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-                {cartDetails()}
+                <CartDetails refresh={open} onClose={closeModal} />
               </Drawer>
               <IconButton
                 size="large"
@@ -96,6 +111,15 @@ function ResponsiveAppBar() {
               >
                 <Avatar alt="User Profile" src="/static/images/avatar/1.jpg" />
               </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={handleMenuClose}>My Orders</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
             </Stack>
           </Stack>
         </Grid>
@@ -108,5 +132,6 @@ function ResponsiveAppBar() {
     </Box>
   );
 }
+
 
 export default ResponsiveAppBar;
