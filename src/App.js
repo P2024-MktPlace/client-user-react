@@ -14,6 +14,7 @@ import NewArrivals from './Components/NewArrivals';
 import MyAccount from './Components/MainPages/Account';
 import OrderStatus from './Components/MainPages/OrderStatus';
 import MyOrders from './Components/MainPages/MyOrders';
+import AllProducts from './Components/MainPages/AllProducts';
 
 function App() {
   // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -40,6 +41,7 @@ function App() {
             {/* <Route path="/profile" element={<MyAccount />} /> */}
             <Route path="/order" element={<OrderStatus />} />
             <Route path="/myorders" element={<MyOrders />} />
+            <Route path="/shop" element={<AllProducts />} />
           </Routes>
         </Box>
       </Stack>

@@ -1,3 +1,3 @@
 const colors = {
-    black: "#141414";
-}
+  black: '#141414',
+};
