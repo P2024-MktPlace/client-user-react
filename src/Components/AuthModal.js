@@ -9,8 +9,9 @@ import { auth } from './firebase'; // Import Firebase auth
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import BASE_API_URL from '../config';
 import Token from './TokenContext'; // Import Token management
+import process from 'process';
 
-const RECAPTCHA_SITE_KEY = '6LcFLy4qAAAAAHBYWsHCJY7ZLhaJIAadVki6gfD5'; // Replace with your reCAPTCHA site key
+const RECAPTCHA_SITE_KEY = process.env.captchaKey; // Replace with your reCAPTCHA site key
 const API_URL = BASE_API_URL; // Replace with your API endpoint
 
 const AuthModal = ({ open, onClose, onLoginSuccess }) => {
@@ -117,8 +118,6 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
           {isSignUp ? 'Sign Up' : 'Sign In'}
         </Typography>
 
-
-
         <TextField
           margin="normal"
           required
@@ -128,7 +127,7 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
           autoFocus
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          sx={{mt:1}}
+          sx={{ mt: 1 }}
         />
         {isSignUp && (
           <TextField
@@ -139,24 +138,23 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
             autoComplete="tel"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            sx={{mt:1}}
+            sx={{ mt: 1 }}
           />
         )}
 
-      {isSignUp && (
-        <TextField
-        margin="normal"
-        required
-        fullWidth
-        label="Full Name"
-        autoComplete="name"
-        autoFocus
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        sx={{mt:1}}
-      />
+        {isSignUp && (
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="Full Name"
+            autoComplete="name"
+            autoFocus
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            sx={{ mt: 1 }}
+          />
         )}
-
 
         <TextField
           margin="normal"
@@ -167,23 +165,25 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{mt:1}}
+          sx={{ mt: 1 }}
         />
-       <Box sx={{display: 'flex', justifyContent: 'center', width: '100%' }} mt={1}>
-        <ReCAPTCHA 
-          sitekey={RECAPTCHA_SITE_KEY} 
-          onChange={handleCaptchaChange} 
-          // style={{ width: '100%' }} // Make the ReCAPTCHA component full width
-          
-        />
-      </Box>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+          mt={1}
+        >
+          <ReCAPTCHA
+            sitekey={RECAPTCHA_SITE_KEY}
+            onChange={handleCaptchaChange}
+            // style={{ width: '100%' }} // Make the ReCAPTCHA component full width
+          />
+        </Box>
 
         <Button
           type="button"
           fullWidth
           variant="contained"
           onClick={handleAuth}
-          sx={{mt:2}}
+          sx={{ mt: 2 }}
         >
           {isSignUp ? 'Sign Up' : 'Sign In'}
         </Button>

@@ -1,4 +1,5 @@
 // config.js
-const BASE_API_URL = 'http://localhost:8080';
+import process from 'process';
+const BASE_API_URL = process.env.baseURL;
 
 export default BASE_API_URL;
