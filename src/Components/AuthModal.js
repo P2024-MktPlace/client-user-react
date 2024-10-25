@@ -12,6 +12,7 @@ import Token from './TokenContext'; // Import Token management
 import process from 'process';
 
 const RECAPTCHA_SITE_KEY = process.env.captchaKey; // Replace with your reCAPTCHA site key
+console.log(RECAPTCHA_SITE_KEY);
 const API_URL = BASE_API_URL; // Replace with your API endpoint
 
 const AuthModal = ({ open, onClose, onLoginSuccess }) => {
