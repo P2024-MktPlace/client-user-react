@@ -6,7 +6,7 @@ const FeaturedCard = ({ item }) => {
   const [thumbnail, setThumbnail] = useState('');
 
   useEffect(() => {
-    setThumbnail(item.product_image_list);
+    setThumbnail(item.product_image_list.split(',')[0]); // Select first image
   }, [item.product_image_list]);
 
   return (
@@ -18,42 +18,28 @@ const FeaturedCard = ({ item }) => {
           width: '100%',
           display: 'block',
           textAlign: 'left',
-          borderRadius: 1, // adds a slight rounding to the card corners
+          borderRadius: 1,
           overflow: 'hidden',
         }}
       >
-        <Stack spacing={1}>
-          <Box p={2}>
-            <Box mb={1}>
-              <img
-                width={200}
-                height={200}
-                src={item.product_image_list.split(',')[0]}
-                style={{ borderRadius: '8px' }}
-                alt={item.product_title}
-              />
-            </Box>
-
+        <Stack p={1}>
+          <Box>
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-end',
+                width: { xs: '90vw', md: 300 }, // Full width on mobile, 400px on desktop
+                height: { xs: '90vw', md: 300 }, // Maintain square aspect ratio
+                overflow: 'hidden',
               }}
             >
-              <span className="featured-product-category">{item.category}</span>
-              <Box
-                sx={{
-                  width: '10px',
-                  height: '15px',
-                  ml: 1,
+              <img
+                src={thumbnail}
+                alt={item.product_title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover', // Ensures the image covers the container properly
                 }}
               />
-              <span className="featured-product-rating">4.9</span>
-            </Box>
-            <span className="featured-product-title">{item.product_title}</span>
-            <Box>
-              <span className="featured-product-price">₹ {item.price}</span>
             </Box>
           </Box>
         </Stack>

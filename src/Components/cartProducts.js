@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import { Button, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  Divider,
+  Grid,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
 import axios from 'axios';
 import BASE_API_URL from '../config';
 import CartItem from './CartItem';
 import { useNavigate } from 'react-router-dom';
 import loadingGIF from '../gifs/loading.gif';
-import emptyCart from '../gifs/empty_cart.gif'
-import CloseIcon from '@mui/icons-material/Close'; 
+import emptyCart from '../gifs/empty_cart.gif';
+import CloseIcon from '@mui/icons-material/Close';
 
-
-function CartDetails({ refresh, onClose  }) {
+function CartDetails({ refresh, onClose }) {
   const [cartData, setCartData] = useState(null);
   const [priceData, setPriceData] = useState(null); // State for price details
   const [loading, setLoading] = useState(true);
@@ -28,9 +34,9 @@ function CartDetails({ refresh, onClose  }) {
       try {
         const [cartResponse, priceResponse] = await Promise.all([
           axios.post(BASE_API_URL + '/get_cart_details', { token }),
-          axios.post(BASE_API_URL + '/get_cart_price', { token }) // Fetch cart price
+          axios.post(BASE_API_URL + '/get_cart_price', { token }), // Fetch cart price
         ]);
-        
+
         setCartData(cartResponse.data);
         setPriceData(priceResponse.data[0]); // Set the price data
         setLoading(false);
@@ -49,31 +55,44 @@ function CartDetails({ refresh, onClose  }) {
   }, [refresh]);
 
   if (loading) {
-    return( 
-    <Box sx={{ width: 350 }} p={2}>
-      <div><img src={loadingGIF} alt="Loading..." /></div>
-    </Box>
+    return (
+      <Box sx={{ width: 350 }} p={2}>
+        <div>
+          <img src={loadingGIF} alt="Loading..." />
+        </div>
+      </Box>
     );
   }
 
   if (error) {
-    return( 
+    return (
       <Box sx={{ width: 350 }} p={2}>
-        <div><img src={loadingGIF} alt="Loading..." /></div>
+        <div>
+          <img src={loadingGIF} alt="Loading..." />
+        </div>
       </Box>
-      );
+    );
   }
 
   // If no items in cart
   if (!cartData || cartData.length === 0) {
-    return( 
-      <Stack m={2} alignItems="center">
-        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ width: '100%' }}>
-          <Typography variant="h5" className="product_title" sx={{ flexGrow: 1, textAlign: 'center' }}>
+    return (
+      <Stack m={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ width: '100%' }}
+        >
+          <Typography
+            variant="h5"
+            className="product_title"
+            sx={{ flexGrow: 1, textAlign: 'left' }}
+          >
             My Cart
           </Typography>
-          <IconButton >
-            <CloseIcon onClick={onClose}/>
+          <IconButton aria-label="Close cart" onClick={onClose}>
+            <CloseIcon />
           </IconButton>
         </Box>
 
@@ -81,49 +100,74 @@ function CartDetails({ refresh, onClose  }) {
           <Divider />
         </Box>
 
-        <Box sx={{ width: 350 }} p={4} display="flex" justifyContent="center" alignItems="center">
+        <Box
+          sx={{ width: { xs: '100%', sm: 350 } }}
+          p={4}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
           <div>
-            <img 
-              src={emptyCart} 
-              alt="Empty cart..." 
+            <img
+              src={emptyCart}
+              alt="Empty cart"
               style={{ width: '100%', height: 'auto' }} // Set width to 100% and height to auto
             />
           </div>
         </Box>
 
         <Box p={2} justifyContent="center" display="flex">
-          <span className='cart-info-text'>
+          <span className="cart-info-text" variant="body1" align="center">
             NO ITEMS IN CART
           </span>
         </Box>
 
         <Box display="flex" justifyContent="center" alignItems="center">
-          <Button 
-            size="large" 
-            variant="contained" 
-            sx={{ fontSize: '16px', backgroundColor: 'black', color: 'white', '&:hover': { backgroundColor: '#333' } }}
+          <Button
+            size="large"
+            variant="contained"
+            sx={{
+              fontSize: '16px',
+              backgroundColor: 'black',
+              color: 'white',
+              '&:hover': { backgroundColor: '#333' },
+            }}
+            onClick={onClose}
           >
             GO SHOPPING
           </Button>
         </Box>
       </Stack>
-
-      
-      );
+    );
   }
 
   // Destructure price data fields
-  const { subtotal = '-', shipping_charges = 0, total = '-', saved = 0, round_off = 0 } = priceData || {};
+  const {
+    subtotal = '-',
+    shipping_charges = 0,
+    total = '-',
+    saved = 0,
+    round_off = 0,
+  } = priceData || {};
 
   return (
     <div>
       <Box sx={{ width: 350 }} m={2} role="presentation">
-        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ width: '100%' }}>
-          <Typography variant="h5" className="product_title" sx={{ flexGrow: 1, textAlign: 'center' }}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ width: '100%' }}
+        >
+          <Typography
+            variant="h5"
+            className="product_title"
+            sx={{ flexGrow: 1, textAlign: 'left' }}
+          >
             My Cart
           </Typography>
-          <IconButton >
-            <CloseIcon onClick={onClose}/>
+          <IconButton>
+            <CloseIcon onClick={onClose} />
           </IconButton>
         </Box>
 
@@ -131,9 +175,13 @@ function CartDetails({ refresh, onClose  }) {
           <Divider />
         </Box>
 
-        <Stack mt={2}  spacing={2}>
+        <Stack>
           {cartData.map((item) => (
-            <CartItem key={item.id} item={item} onQuantityChangeSuccess={fetchCartDetails} />
+            <CartItem
+              key={item.id}
+              item={item}
+              onQuantityChangeSuccess={fetchCartDetails}
+            />
           ))}
         </Stack>
       </Box>
@@ -141,73 +189,87 @@ function CartDetails({ refresh, onClose  }) {
       <Divider className="divider" component="div" role="presentation" />
 
       <Box p={2}>
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
-          <span className='cart-key'>Subtotal</span>
-        </Grid>
-        <Grid item xs={4} textAlign="end">
-          <span className='cart-value'>₹{subtotal}</span>
-        </Grid>
-      </Grid>
-      
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
-        <span className='cart-key'>Discount Saved</span>
-        </Grid>
-        <Grid item xs={4} textAlign="end" sx={{ color: 'green' }}>
-        <span className='cart-value'>- ₹{saved}</span>
-        </Grid>
-      </Grid>
-      
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
-        <span className='cart-key'>Shipping Charges</span>
-        </Grid>
-        <Grid item xs={4} textAlign="end">
-        <span className='cart-value'>{shipping_charges === 0 ? 'FREE' : `₹${shipping_charges}`}</span>
-        </Grid>
-      </Grid>
-      
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
-        <span className='cart-key'>Round Off</span>
-        </Grid>
-        <Grid item xs={4} textAlign="end">
-        <span className='cart-value'>₹{round_off}</span>
-        </Grid>
-      </Grid>
-    </Box>
+        <Stack>
+          <Grid container spacing={2}>
+            <Grid item xs={8}>
+              <span className="cart-key">Subtotal</span>
+            </Grid>
+            <Grid item xs={4} textAlign="end">
+              <span className="cart-value">₹{subtotal}</span>
+            </Grid>
+          </Grid>
 
-    <Divider className="divider" component="div" role="presentation" />
+          <Grid container spacing={2}>
+            <Grid item xs={8}>
+              <span className="cart-key">Shipping Charges</span>
+            </Grid>
+            <Grid item xs={4} textAlign="end">
+              <span className="cart-value">
+                {shipping_charges === 0 ? 'FREE' : `₹${shipping_charges}`}
+              </span>
+            </Grid>
+          </Grid>
 
-    <Box p={2}>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs={8}>
-        <span className='cart-value'>Total</span>
-        </Grid>
-        <Grid item xs={4} textAlign="end" >
-          <Stack direction="row" justifyContent="flex-end" alignItems="baseline">
-            <Typography sx={{ mr: 1, fontSize: '1rem', color: 'grey' }}>INR</Typography>
-            <span className='total-cart-price'>₹{total}</span>
-          </Stack>
-        </Grid>
-      </Grid>
-    </Box>
+          <Grid container spacing={2}>
+            <Grid item xs={8}>
+              <span className="cart-key">Round Off</span>
+            </Grid>
+            <Grid item xs={4} textAlign="end">
+              <span className="cart-value">₹{round_off}</span>
+            </Grid>
+          </Grid>
 
+          <Grid container spacing={2}>
+            <Grid item xs={8}>
+              <span className="cart-key">Discount Saved</span>
+            </Grid>
+            <Grid item xs={4} textAlign="end" sx={{ color: 'green' }}>
+              <span className="cart-value">- ₹{saved}</span>
+            </Grid>
+          </Grid>
+        </Stack>
+      </Box>
+
+      <Divider className="divider" component="div" role="presentation" />
+
+      <Box p={2}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={8}>
+            <span className="cart-value">Total</span>
+          </Grid>
+          <Grid item xs={4} textAlign="end">
+            <Stack
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="baseline"
+            >
+              <Typography sx={{ mr: 1, fontSize: '1rem', color: 'grey' }}>
+                INR
+              </Typography>
+              <span className="total-cart-price">₹{total}</span>
+            </Stack>
+          </Grid>
+        </Grid>
+      </Box>
 
       <Divider className="divider" component="div" role="presentation" />
 
       <Box p={2} className="fullwidth">
         <Box display="flex" justifyContent="center" alignItems="center">
-          <Button 
-            size="large" 
+          <Button
+            size="large"
             className="fullwidth"
             disableElevation
-            variant="contained" 
+            variant="contained"
             onClick={handleClick}
-            sx={{ fontSize: '16px', backgroundColor: 'black', color: 'white', '&:hover': { backgroundColor: '#333' } }}
+            sx={{
+              fontSize: '16px',
+              backgroundColor: 'black',
+              color: 'white',
+              '&:hover': { backgroundColor: '#333' },
+            }}
           >
-           Proceed to Checkout
+            Proceed to Checkout
           </Button>
         </Box>
       </Box>

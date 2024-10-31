@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import {
+  Modal,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+  LinearProgress,
+  Stack,
+} from '@mui/material';
 import ReCAPTCHA from 'react-google-recaptcha';
-import { auth } from './firebase'; // Import Firebase auth
+import { auth } from './firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import BASE_API_URL from '../config';
-import Token from './TokenContext'; // Import Token management
-import process from 'process';
+import Token from './TokenContext';
 
-const RECAPTCHA_SITE_KEY = '6LcFLy4qAAAAAHBYWsHCJY7ZLhaJIAadVki6gfD5'; // Replace with your reCAPTCHA site key
-console.log(RECAPTCHA_SITE_KEY);
-const API_URL = BASE_API_URL; // Replace with your API endpoint
+const RECAPTCHA_SITE_KEY = '6LcFLy4qAAAAAHBYWsHCJY7ZLhaJIAadVki6gfD5';
 
 const AuthModal = ({ open, onClose, onLoginSuccess }) => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -22,184 +25,196 @@ const AuthModal = ({ open, onClose, onLoginSuccess }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [captchaValue, setCaptchaValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
+
+  const showSnackbar = (message, severity = 'info') => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const closeSnackbar = () =>
+    setSnackbar({ open: false, message: '', severity: 'info' });
+
+  const resetForm = () => {
+    setName('');
+    setEmail('');
+    setPhoneNumber('');
+    setPassword('');
+    setCaptchaValue('');
+  };
 
   const handleAuth = async () => {
     if (!captchaValue) {
-      alert('Please verify that you are not a robot.');
+      showSnackbar('Please verify that you are not a robot.', 'warning');
       return;
     }
 
+    setLoading(true);
     try {
       if (isSignUp) {
-        const response = await fetch(`${API_URL}/signup`, {
+        const response = await fetch(`${BASE_API_URL}/signup`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            phoneNumber,
-            password,
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phoneNumber, password }),
         });
+
         if (response.ok) {
-          const data = await response.json();
-          onClose(); // Close modal after successful sign-up
+          showSnackbar('Sign-up successful! Please log in.', 'success');
+          resetForm();
+          setIsSignUp(false);
         } else {
-          console.error('Error during sign-up:', response.statusText);
+          showSnackbar('Error during sign-up. Please try again.', 'error');
         }
       } else {
-        // Sign in with Firebase
         await signInWithEmailAndPassword(auth, email, password);
         const user = auth.currentUser;
 
         if (user) {
-          // Retrieve token from Firebase user
           const idToken = await user.getIdToken();
-
-          // Verify token with your API
-          const response = await fetch(`${API_URL}/signin`, {
+          const response = await fetch(`${BASE_API_URL}/signin`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email,
-              idToken,
-            }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, idToken }),
           });
 
           const data = await response.json();
 
-          if (response.ok) {
-            if (data.status === 'FAILED') {
-              alert('Username or password is incorrect.');
-            } else {
-              // Store the token using the Token management
-              Token.setToken(idToken);
-              onLoginSuccess(); // Notify parent component
-              onClose(); // Close modal after successful sign-in
-            }
+          if (response.ok && data.status !== 'FAILED') {
+            Token.setToken(idToken);
+            showSnackbar('Sign-in successful!', 'success');
+            onLoginSuccess();
+            resetForm();
+            onClose();
           } else {
-            console.error('Error:', response.statusText);
+            showSnackbar('Invalid credentials. Please try again.', 'error');
           }
         }
       }
     } catch (error) {
-      console.error('Authentication Error:', error);
+      showSnackbar(`Authentication Error: ${error.message}`, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleCaptchaChange = (value) => {
-    setCaptchaValue(value);
-  };
+  const handleCaptchaChange = (value) => setCaptchaValue(value);
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      aria-labelledby="auth-modal-title"
-      aria-describedby="auth-modal-description"
-    >
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 350,
-          bgcolor: 'background.paper',
-          borderRadius: 1,
-          boxShadow: 24,
-          p: 3,
-        }}
-      >
-        <Typography id="auth-modal-title" variant="h6" component="h2">
-          {isSignUp ? 'Sign Up' : 'Sign In'}
-        </Typography>
-
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          label="Email Address"
-          autoComplete="email"
-          autoFocus
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          sx={{ mt: 1 }}
-        />
-        {isSignUp && (
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Phone Number"
-            autoComplete="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            sx={{ mt: 1 }}
-          />
-        )}
-
-        {isSignUp && (
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Full Name"
-            autoComplete="name"
-            autoFocus
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            sx={{ mt: 1 }}
-          />
-        )}
-
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          sx={{ mt: 1 }}
-        />
+    <>
+      <Modal open={open} onClose={onClose} aria-labelledby="auth-modal-title">
         <Box
-          sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
-          mt={1}
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+          }}
         >
-          <ReCAPTCHA
-            sitekey={RECAPTCHA_SITE_KEY}
-            onChange={handleCaptchaChange}
-            // style={{ width: '100%' }} // Make the ReCAPTCHA component full width
-          />
-        </Box>
+          {loading && <LinearProgress sx={{ mb: 2 }} />}
 
-        <Button
-          type="button"
-          fullWidth
-          variant="contained"
-          onClick={handleAuth}
-          sx={{ mt: 2 }}
+          <Typography
+            id="auth-modal-title"
+            variant="h5"
+            textAlign="center"
+            mb={2}
+          >
+            {isSignUp ? 'Create an Account' : 'Welcome Back'}
+          </Typography>
+
+          <Stack spacing={2}>
+            <TextField
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              fullWidth
+              required
+            />
+
+            {isSignUp && (
+              <TextField
+                label="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+                required
+              />
+            )}
+
+            {isSignUp && (
+              <TextField
+                label="Phone Number"
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                fullWidth
+                required
+              />
+            )}
+
+            <TextField
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              fullWidth
+              required
+            />
+
+            <Box display="flex" justifyContent="center" mt={1}>
+              <ReCAPTCHA
+                sitekey={RECAPTCHA_SITE_KEY}
+                onChange={handleCaptchaChange}
+              />
+            </Box>
+
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleAuth}
+              disabled={loading}
+              sx={{ mt: 2 }}
+            >
+              {isSignUp ? 'Sign Up' : 'Sign In'}
+            </Button>
+
+            <Button
+              variant="text"
+              fullWidth
+              onClick={() => setIsSignUp(!isSignUp)}
+            >
+              {isSignUp
+                ? 'Already have an account? Sign In'
+                : "Don't have an account? Sign Up"}
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={closeSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={closeSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
         >
-          {isSignUp ? 'Sign Up' : 'Sign In'}
-        </Button>
-        <Button
-          type="button"
-          fullWidth
-          variant="text"
-          onClick={() => setIsSignUp(!isSignUp)}
-        >
-          {isSignUp
-            ? 'Already have an account? Sign In'
-            : "Don't have an account? Sign Up"}
-        </Button>
-      </Box>
-    </Modal>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

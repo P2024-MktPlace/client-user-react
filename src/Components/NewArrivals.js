@@ -36,14 +36,13 @@ function NewArrivals() {
         sx={{
           flexGrow: 1,
           p: 2,
-          maxWidth: '85%', // Set max width to 70% of the screen
           margin: '0 auto', // Center the box horizontally
         }}
       >
         <Grid
           container
-          spacing={4}
-          justifyContent={{ xs: 'center', md: 'space-between' }} // Center items on mobile
+          rowSpacing={4} // Equal spacing between rows
+          justifyContent={{ xs: 'center', md: 'space-between' }}
         >
           {products.map((item) => (
             <Grid item xs={12} sm={6} md={3} key={item.id}>

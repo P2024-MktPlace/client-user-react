@@ -11,6 +11,7 @@ import Menu from '@mui/material/Menu'; // Import Menu
 import MenuItem from '@mui/material/MenuItem'; // Import MenuItem
 import CartDetails from './cartProducts';
 import AuthModal from './AuthModal';
+import { useNavigate } from 'react-router-dom';
 
 function ResponsiveAppBar() {
   const [open, setOpen] = useState(false);
@@ -19,8 +20,11 @@ function ResponsiveAppBar() {
   const [anchorEl, setAnchorEl] = useState(null); // State for menu
   const openMenu = Boolean(anchorEl);
 
+  const navigate = useNavigate(); // Initialize the hook
+
   useEffect(() => {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token');
     setUserLoggedIn(!!token);
   }, [authModalOpen]);
 
@@ -50,6 +54,16 @@ function ResponsiveAppBar() {
 
   const handleMenuClose = () => {
     setAnchorEl(null); // Close menu
+  };
+
+  const handleNavigateProfile = () => {};
+
+  const handleNavigateOrder = () => {
+    navigate('/myorders');
+  };
+
+  const navigateToHome = () => {
+    navigate('/');
   };
 
   const handleLoginSuccess = () => {
@@ -82,13 +96,16 @@ function ResponsiveAppBar() {
             spacing={2}
             flexWrap="wrap"
           >
-            <img
-              className="logo"
-              src={'https://dummyimage.com/150x75/b0000/fff'}
-              alt="Logo"
-              loading="lazy"
-              style={{ maxWidth: '100px', height: 'auto' }}
-            />
+            <Box onClick={navigateToHome} sx={{ cursor: 'pointer' }}>
+              <img
+                className="logo"
+                src={'https://dummyimage.com/150x75/b0000/fff'}
+                alt="Logo"
+                loading="lazy"
+                style={{ maxWidth: '100px', height: 'auto' }}
+              />
+            </Box>
+
             <Stack direction="row" spacing={2} alignItems="center">
               <IconButton
                 size="medium"
@@ -116,8 +133,8 @@ function ResponsiveAppBar() {
                 open={openMenu}
                 onClose={handleMenuClose}
               >
-                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-                <MenuItem onClick={handleMenuClose}>My Orders</MenuItem>
+                <MenuItem onClick={handleNavigateProfile}>Profile</MenuItem>
+                <MenuItem onClick={handleNavigateOrder}>My Orders</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </Stack>
@@ -132,6 +149,5 @@ function ResponsiveAppBar() {
     </Box>
   );
 }
-
 
 export default ResponsiveAppBar;

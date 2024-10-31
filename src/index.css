@@ -1,509 +1,313 @@
-/* In App.css or any other CSS file */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Cormorant+Garamond&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap');
+
+:root {
+  --primary-color: #5c3400;
+  --secondary-color: #383838;
+  --border-color: #eeeeee;
+  --accent-color: #ffb85b;
+  --font-primary: 'Poppins', sans-serif;
+  --font-heading: 'Cinzel', serif;
+  --font-display: 'Playfair Display', serif;
+  --font-alt: 'Cormorant Garamond', serif;
+}
+
 body {
   margin: 0;
-  font-family: "Poppins", sans-serif;
+  font-family: var(--font-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
 }
 
-
-.app-bar
-{
-  background-color: #ffffff;
-  border: 1px solid #eeeeee;
+.app-bar {
+  background-color: #fff;
+  border: 1px solid var(--border-color);
 }
 
-.logo
-{
+.logo {
   height: 50px;
   width: auto;
 }
 
-
-.featured-products-section
-{
+.featured-products-section {
   margin-top: 25px;
 }
 
-.heading-1
-{
-  font-optical-sizing: auto;
+.heading-1 {
   font-size: 40px;
-  font-family: "Cinzel", serif;
+  font-family: var(--font-heading);
   font-weight: 500;
-  font-style: normal;
   word-spacing: 10px;
-  color: #5c3400;
+  color: var(--primary-color);
 }
 
-.productCard
-{
+.productCard {
   width: 250px;
-  height: auto;
 }
 
-.cardImage
-{
-  width: 100%; /* Fit the width of the container */
-  aspect-ratio: 1 / 1; /* Maintain a square aspect ratio */
-  object-fit: cover; /* Ensures the image covers the entire area while maintaining its aspect ratio */
-  display: block; /* Removes any unwanted spacing under the image */
+.cardImage {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
 }
 
-.categoriesList
-{
+.categoriesList {
   margin-top: 30px;
 }
 
+.heading-small,
+.heading-medium {
+  font-family: var(--font-heading);
+  word-spacing: 10px;
+  color: var(--primary-color);
+}
 
-.heading-small
-{
-  font-optical-sizing: auto;
+.heading-small {
   font-size: 25px;
-  font-family: "Cinzel", serif;
-  font-weight: 500;
-  font-style: normal;
-  word-spacing: 10px;
-  color: #5c3400;
-  margin: 0;
 }
 
-.heading-medium
-{
-  font-optical-sizing: auto;
+.heading-medium {
   font-size: 40px;
-  font-family: "Cinzel", serif;
-  font-weight: 500;
-  font-style: normal;
-  word-spacing: 10px;
-  color: #5c3400;
-  margin: 0;
 }
 
-.about
-{
-  background-color: #ffb85b;
+.about {
+  background-color: var(--accent-color);
   padding: 20px;
 }
 
-
-.about-heading
-{
+.about-heading {
   font-size: 20px;
   margin: 15px;
-  display: block;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.product_title
-{
+.product_title,
+.product_id,
+.product_description {
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 600;
+}
+
+.product_title {
   font-size: 20px;
-  display: block;
-  font-weight: 600;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 
-.product_id
-{
+.product_id {
   font-size: 12px;
-  display: block;
-  font-weight: 600;
-  color: #383838;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+  color: var(--secondary-color);
 }
 
-.product_description
-{
+.product_description {
   font-size: 14px;
-  display: block;
-  color: #383838;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+  color: var(--secondary-color);
 }
 
-
-.button-vertical
-{
+.button-vertical {
   margin-top: 10px;
-  border-color: #ff1c1c;
+  border: 1px solid #ff1c1c;
 }
 
-.product-image-slide
-{
+.product-image-slide {
   height: 400px;
-  aspect-ratio: 1 / 1; /* Maintain a square aspect ratio */
-  object-fit: cover; /* Ensures the image covers the entire area while maintaining its aspect ratio */
-  display: block; /* Removes any unwanted spacing under the image */
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
   margin-bottom: 10px;
 }
 
-.product-price
-{
+.product-price {
   font-size: 20px;
-  font-family: "Poppins", sans-serif;
-  display:  block; 
+  font-family: var(--font-primary);
+  font-weight: 500;
 }
 
-.product-desc
-{
+.product-desc {
   font-size: 12px;
-  display:  block; 
 }
 
-.fullwidth
-{
-  width: 100%;
-}
-
-
-.item-price
-{
+.item-price {
   font-size: 14px;
-  font-family: "Poppins", sans-serif;
   font-weight: 600;
-  display: block;
 }
 
-.item-oprice
-{
+.item-oprice {
   font-size: 15px;
-  font-family: "Cormorant Garamond", serif;
-  font-weight: 400;
-  margin-left: 10px;
   text-decoration: line-through;
+  margin-left: 10px;
+  font-family: var(--font-alt);
 }
 
-.item-id
-{
+.item-id {
   font-size: 10px;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
 }
-
 
 .add-to-cart {
   border-radius: 3px;
-  border: 1px solid #dbdbdb; /* Corrected to add border */
+  border: 1px solid #dbdbdb;
   margin: 10px;
 }
 
-.bt
-{
-  border-top: #ddd 1px solid;
+.bt {
+  border-top: 1px solid #ddd;
 }
 
+/* FEATURED PRODUCT STYLES */
 
-/* HOMEPAGE ITEMS */
-
-.featured-product-category
-{
+.featured-product-category,
+.featured-product-rating {
   font-size: 12px;
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  color: #5c5c5c;
-  display: block;
-}
-
-.featured-product-rating
-{
-  font-size: 12px;
-  font-family: "Poppins", sans-serif;
   font-weight: 600;
-  display: block;
-  padding-right: 5px;
+  color: var(--secondary-color);
 }
 
-.featured-product-title
-{
+.featured-product-title {
   font-size: 14px;
-  font-family: "Poppins", sans-serif;
   font-weight: 500;
   color: #0f0f0f;
-  display: block;
 }
 
-.featured-product-price
-{
+.featured-product-price {
   font-size: 20px;
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--font-alt);
   font-weight: 600;
-  margin-top: 5px;
   color: #0f0f0f;
 }
 
-
-.featured-product-oprice
-{
+.featured-product-oprice {
   font-size: 16px;
-  font-family: "Cormorant Garamond", serif;
-  font-weight: 400;
-  margin-top: 5px;
   margin-left: 5px;
-  color: #5c5c5c;
   text-decoration: line-through;
-
+  color: #5c5c5c;
 }
 
 /* PRODUCT DETAILS */
 
-.product-heading
-{
-  font-family: "Playfair Display", serif;
+.product-heading {
   font-size: 40px;
-  font-optical-sizing: auto;
+  font-family: var(--font-display);
   font-weight: 600;
-  font-style: normal;
   display: block;
 }
 
-
-
-.product-id
-{
-  font-family: "Playfair Display", serif;
-  font-size: 20px;
-  font-optical-sizing: auto;
+.product-id {
+  font-size: 18px;
   font-weight: 600;
-  font-style: normal;
+  color: var(--secondary-color);
   display: block;
 }
 
-.product-oprice
-{
-  font-family: "Playfair Display", serif;
+.product-oprice {
   font-size: 20px;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
   text-decoration: line-through;
   color: #8f8f8f;
 }
 
-.product-price
-{
-  font-family: "Playfair Display", serif;
-  font-size: 25px;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
-}
-
-
-.product-description
-{
-  font-family: "Playfair Display", serif;
+.product-description {
   font-size: 16px;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
 }
 
-
-.item-name
-{
-  font-family: "Playfair Display", serif;
+.item-name {
   font-size: 16px;
-  font-optical-sizing: auto;
   font-weight: 600;
-  font-style: normal;
 }
 
-.cart-item-name
-{
-
-  font-family: "Playfair Display", serif;
+.cart-item-name {
   font-size: 14px;
-  font-optical-sizing: auto;
   font-weight: 800;
-  font-style: normal;
 }
 
-
-.cart-item-id
-{
-  font-family: "Playfair Display", serif;
+.cart-item-id {
   font-size: 10px;
-  font-optical-sizing: auto;
   font-weight: 600;
-  font-style: normal;
-  display: block;
+  color: var(--secondary-color);
 }
 
+/* ADDRESS SECTION */
 
-/* ADD ADDRESS */
-
-.address-title
-{
+.address-title {
   font-size: 16px;
-  font-family: "Poppins", sans-serif;
   font-weight: 600;
-  color: #0f0f0f;
-  display: block;
   padding: 10px;
 }
 
-.saved-address-bg
-{
+.saved-address-bg {
   background-color: #dddddd;
   padding: 5px;
 }
 
-.address-subtitle
-{
+.address-subtitle {
   font-size: 14px;
-  font-family: "Poppins", sans-serif;
   font-weight: 600;
-  color: #0f0f0f;
-  display: block;
 }
 
-.checkout_item-name
-{
-  font-family: "Playfair Display", serif;
+.checkout_item-name,
+.checkout_price {
   font-size: 14px;
-  font-optical-sizing: auto;
   font-weight: 600;
-  font-style: normal;
 }
 
-
-.checkout_price
-{
-  font-family: "Playfair Display", serif;
-  font-size: 14px;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
-}
-
-
-
-/* SETTINGS/ MY PROFILE / ACCOUNT  */
+/* PROFILE/SETTINGS STYLES */
 
 .settings-heading {
-  font-family: "Playfair Display", serif;
   font-size: 30px;
-  font-weight: 700;
   margin-bottom: 16px;
 }
 
-.settings-subject {
-  font-family: "Playfair Display", serif;
-  font-size: 18px;
-  font-weight: 400;
-  font-style: normal;
-  display: inline-block;
-  min-width: 150px;
-}
-
+.settings-subject,
 .settings-value {
-  font-family: "Playfair Display", serif;
   font-size: 18px;
-  font-weight: 400;
-  font-style: normal;
 }
 
-.order-status
-{
-  font-family: "Playfair Display", serif;
+/* ORDER SECTION */
+
+.order-status {
   font-size: 40px;
   font-weight: 800;
   color: #006b05;
-  font-style: normal;
 }
 
-.order-thanks
-{
-  font-family: "Playfair Display", serif;
+.order-thanks {
   font-size: 30px;
-  font-weight: 400;
   color: #adadad;
-  font-style: normal;
 }
 
-.cart-info-text
-{
-  width:100%;
-  font-family: "Cormorant Garamond", serif;
+.myorder-orderno {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.order_name,
+.order_info {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.order_prodid {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* CART STYLES */
+
+.cart-info-text,
+.total-cart-price {
   font-size: 25px;
   font-weight: 600;
-  display: block;
-  margin: 0px;
 }
 
-.cart-key
-{
-  width:100%;
-  font-family: "Poppins", sans-serif;
+.cart-key,
+.cart-value {
   font-size: 16px;
-  font-weight: 500;
-  color: #747474;
-  display: block;
-  margin: 0px;
 }
 
-.cart-value
-{
-  width:100%;
-  font-family: "Poppins", sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  display: block;
-  margin: 0px;
-}
-
-.total-cart-price
-{
-  width:100%;
-  font-family: "Poppins", sans-serif;
-  font-size: 30px;
-  font-weight: 500;
-  display: block;
-  margin: 0px;
-}
-
-
-
-
-.productBoxBorder
-{
+.productBoxBorder {
   border: 1px solid #d1d1d1;
   padding: 15px;
-  border-radius: 15px ;
-}
-
-
-.myorder-orderno
-{
-  width:100%;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-size: 20px;
-  display: block;
-  margin: 0px;
-}
-
-.order_name
-{
-  width:100%;
-  font-family: "Poppins", sans-serif;
-  font-size: 16px;
-  display: block;
-  font-weight: 400;
-  margin: 0px;
-}
-
-
-.order_info
-{
-  width:100%;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  display: block;
-  margin: 0px;
+  border-radius: 15px;
 }

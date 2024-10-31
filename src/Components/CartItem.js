@@ -3,171 +3,135 @@ import {
   Box,
   Typography,
   Stack,
-  IconButton
+  IconButton,
+  Chip,
+  Divider,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit'; // Import the Edit icon
-import AddIcon from '@mui/icons-material/Add'; // Importing Add Icon
-import RemoveIcon from '@mui/icons-material/Remove'; // Importing Remove Icon
+import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import BASE_API_URL from '../config';
 
 const CartItem = ({ item, onQuantityChangeSuccess }) => {
-  const [count, setCount] = useState(1); // Default count is 1
   const [thumbnail, setThumbnail] = useState('');
-  const [quantity, setQuantity] = useState(item.quantity); // Set initial quantity from item
-  const [editModalOpen, setEditModalOpen] = useState(false); // State for modal
-
-  const handleIncrement = async () => {
-    const token = localStorage.getItem('token');
-    await fetch(BASE_API_URL + '/add_to_cart', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Include token in the headers
-      },
-      body: JSON.stringify({
-          product_id: item.product_id,
-          quantity: 1,
-          token: token,
-      })
-  });
-
-  onQuantityChangeSuccess();
-  };
-
-  const handleDecrement = async () => {
-    const token = localStorage.getItem('token');
-    await fetch(BASE_API_URL + '/add_to_cart', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Include token in the headers
-      },
-      body: JSON.stringify({
-          product_id: item.product_id,
-          quantity: -1,
-          token: token,
-      })
-  });
-  onQuantityChangeSuccess();
-  };
-
-  // Open modal when the box is clicked
-  const handleBoxClick = () => {
-    setEditModalOpen(true);
-  };
+  const [quantity, setQuantity] = useState(item.quantity);
 
   useEffect(() => {
     setThumbnail(item.thumbnail.split(',')[0]);
   }, [item.thumbnail]);
 
+  const handleIncrement = async () => {
+    const token = localStorage.getItem('token');
+    await fetch(`${BASE_API_URL}/add_to_cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        token: token,
+        product_id: item.product_id,
+        quantity: 1,
+      }),
+    });
+    onQuantityChangeSuccess();
+    setQuantity(quantity + 1);
+  };
+
+  const handleDecrement = async () => {
+    const token = localStorage.getItem('token');
+    await fetch(`${BASE_API_URL}/add_to_cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        token: token,
+        product_id: item.product_id,
+        quantity: -1,
+      }),
+    });
+    onQuantityChangeSuccess();
+    setQuantity(quantity - 1);
+  };
+
+  const handleBoxClick = () => {
+    // Handle Edit Icon click
+    alert('Edit item functionality coming soon!');
+  };
+
   return (
-    <>
-      {item.quantity === 0 ? (
-        <div></div>
-      ) : (
-          <Box sx={{ border: '1px solid #ddd', borderRadius: 2 }}>
-            <Stack>
-              <Box m={1} sx={{ display: 'flex' }}>
-                <Box
-                  sx={{
-                    width: 80, // Ensure width and height are the same to maintain 1:1 aspect ratio
-                    height: 80,
-                    overflow: 'hidden',
-                    borderRadius: '4px',
-                    flexShrink: 0,
-                  }}
-                >
-                  <img
-                    src={thumbnail}
-                    alt={item.product_title}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      objectPosition: 'center',
-                    }}
-                  />
-                </Box>
+    <Box sx={{ p: 2, border: '1px solid #ddd', borderRadius: 2, mb: 2 }}>
+      <Stack direction="row" spacing={2}>
+        {/* Product Thumbnail */}
+        <Box
+          sx={{
+            width: 80,
+            height: 80,
+            overflow: 'hidden',
+            borderRadius: 1,
+            border: '1px solid #eee',
+            flexShrink: 0,
+          }}
+        >
+          <img
+            src={thumbnail}
+            alt={item.product_title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </Box>
 
-                <Stack
-                  sx={{
-                    flexGrow: 1,
-                    ml: 1,
-                    display: 'flex', // Use flexbox layout
-                    flexDirection: 'column', // Align items in a column
-                    justifyContent: 'space-between', // Space out title and quantity
-                  }}
-                >
-                  <Typography
-                    className="item-title"
-                    variant="body1"
-                    sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, fontWeight: 'bold' }}
-                  >
-                    {item.product_title}
-                  </Typography>
+        <Stack sx={{ flex: 1 }}>
+          {/* Product Info */}
+          <span className="order_name">
+            {item.category || 'SYNTHESISER MODULES'}
+          </span>
 
-                 
-                </Stack>
-              </Box>
+          <span className="cart-title">{item.product_title}</span>
 
-              <Box className="bt">
-                <Box
-                  m={1}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontSize: { xs: '0.8rem', sm: '1rem' },
-                  }}
-                >
+          <Stack direction="row" spacing={1} mt={2} alignItems="center">
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                border: '1px solid #ddd',
+                borderRadius: 1,
+              }}
+            >
+              <IconButton
+                size="small"
+                onClick={handleDecrement}
+                aria-label="decrease quantity"
+              >
+                <RemoveIcon fontSize="small" />
+              </IconButton>
+              <Typography variant="body2" sx={{ mx: 1 }}>
+                {quantity}
+              </Typography>
+              <IconButton
+                size="small"
+                onClick={handleIncrement}
+                aria-label="increase quantity"
+              >
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </Box>
+            <Box
+              sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}
+            >
+              <span className="cart-price">
+                {' ₹ '}
 
-              <Box>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <span sx={{ fontSize: { xs: '0.7rem', sm: '0.9rem' } }}>Quantity :</span>
-
-                      {/* Box wrapper to apply border styling */}
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          border: '1px solid #ddd', // Border style
-                          borderRadius: '4px', // Rounded corners
-                          padding: '2px 8px', // Inner padding to space out elements
-                        }}
-                      >
-                        <IconButton size="small" onClick={handleDecrement} >
-                          <RemoveIcon fontSize="small" />
-                        </IconButton>
-                        <Typography style={{ fontSize: '0.9rem', margin: '0 4px' }}>{quantity}</Typography>
-                        <IconButton size="small" onClick={handleIncrement}>
-                          <AddIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    </Stack>
-                  </Box>
-                  <Box>
-                    <div>
-                      {/* Box with edit icon */}
-                      <Box
-                        onClick={handleBoxClick}
-                        sx={{
-                          cursor: 'pointer', // Set cursor to pointer
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        {/* Include edit icon here, e.g., <EditIcon /> */}
-                      </Box>
-                      {/* Modal Component */}
-                    </div>
-                  </Box>
-                  <span sx={{ fontSize: { xs: '0.7rem', sm: '0.9rem' } }}>Rs. {item.price}</span>
-                </Box>
-              </Box>
-            </Stack>
-          </Box>
-
-      )}
-    </>
+                {item.price !== undefined && quantity > 0
+                  ? new Intl.NumberFormat('en-IN').format(item.price * quantity)
+                  : 'N/A'}
+              </span>
+            </Box>
+          </Stack>
+        </Stack>
+      </Stack>
+    </Box>
   );
 };
 

@@ -1,19 +1,22 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, CircularProgress, Alert } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import SettingMenu from '../MiniComponents/SettingMenu';
 import MyOrderProduct from '../MiniComponents/MyOrderProduct';
 import BASE_API_URL from '../../config';
-import axios from 'axios';
 
 const MyOrders = () => {
   const [orderDetails, setOrderDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  console.log(orderDetails);
   useEffect(() => {
     const fetchOrderDetails = async () => {
       const token = localStorage.getItem('token');
-      if (!token) return; // Handle case when token is not found
+      if (!token) {
+        setError('Authentication token not found. Please login.');
+        setLoading(false);
+        return;
+      }
 
       try {
         const response = await fetch(`${BASE_API_URL}/myorders`, {
@@ -25,7 +28,9 @@ const MyOrders = () => {
           body: JSON.stringify({ token }),
         });
 
-        if (!response.ok) throw new Error('Failed to fetch orders');
+        if (!response.ok) {
+          throw new Error('Failed to fetch orders. Please try again later.');
+        }
 
         const data = await response.json();
         setOrderDetails(data);
@@ -39,33 +44,51 @@ const MyOrders = () => {
     fetchOrderDetails();
   }, []);
 
-  if (loading) return <Typography>Loading...</Typography>;
-  if (error) return <Typography>Error: {error}</Typography>;
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="80vh"
+      >
+        <CircularProgress /> {/* Loading spinner */}
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" mt={2}>
+        <Alert severity="error">{error}</Alert> {/* Error message */}
+      </Box>
+    );
+  }
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center" // Center the content
-      width="100%" // Full width of the viewport
-      //   p={2}                     // Optional padding for better spacing
-    >
+    <Box display="flex" justifyContent="center" width="100%">
       <Box
         sx={{
           display: 'flex',
-          maxWidth: '1400px', // Set a maximum width for the container
-          width: '70%', // Full width up to the max width
+          maxWidth: '1400px',
+          width: '90%', // Adjust width relative to the screen size
+          flexDirection: 'column',
         }}
       >
         <Box flexBasis="100%" p={2}>
-          <Typography sx={{ fontSize: '40px', fontStyle: 'bold' }}>
-            My Orders
-          </Typography>
+          <span className="settings-heading">My Orders</span>
 
-          <Stack mt={2} spacing={2}>
-            {orderDetails.map((item) => (
-              <MyOrderProduct key={item.order_id} item={item} />
-            ))}
-          </Stack>
+          {orderDetails.length > 0 ? (
+            <Stack mt={2} spacing={2}>
+              {orderDetails.map((item) => (
+                <MyOrderProduct key={item.order_id} item={item} />
+              ))}
+            </Stack>
+          ) : (
+            <Typography variant="body1" mt={2} textAlign="center">
+              No orders found.
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>

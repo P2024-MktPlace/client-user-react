@@ -1,59 +1,141 @@
 import { Box, Chip, Paper, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const OrderCard = ({ item }) => {
+  const navigate = useNavigate();
+
+  const viewProduct = () => {
+    navigate(`/product/id=${item.product_id}`);
+  };
+
   return (
-    <Box mt={2}>
-      <Paper
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
+        width: '100%',
+      }}
+    >
+      {/* Image Section - 30% */}
+      <Box
         sx={{
-          borderRadius: 2,
           display: 'flex',
           alignItems: 'center',
-          width: '100%',
+          justifyContent: 'center',
+          borderRadius: '5px',
+          width: { xs: '100%', sm: '120px' }, // 100% on mobile, 30% on larger screens
+          height: '120px',
+          overflow: 'hidden',
+          position: 'relative',
         }}
       >
-        {/* Image Section */}
+        <img
+          src={item.product_image_list.split(',')[0]}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+          }}
+        />
+        {/* Circle with Quantity */}
         <Box
           sx={{
+            position: 'absolute',
+            top: '5px',
+            right: '5px',
+            width: '25px',
+            height: '25px',
+            paddingBottom: '2px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            color: 'white',
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '12px',
           }}
         >
-          <img
-            src={item.product_image_list.split(',')[0]}
-            //   alt={item.product_title}
-            style={{
-              borderTopLeftRadius: '10px',
-              borderBottomLeftRadius: '10px',
-              width: '120px',
-              height: '120px',
-              objectFit: 'cover', // Ensures the image covers the area without distortion
+          {item.product_quantity}
+        </Box>
+      </Box>
+
+      {/* Product Info Section - 50% */}
+      <Box
+        p={{ xs: 1, sm: 2 }}
+        sx={{ width: { xs: '100%', sm: '60%' } }} // 100% on mobile, 50% on larger screens
+      >
+        <Stack spacing={1}>
+          <span className="order_prodid">SKU : {item.product_id}</span>
+          <span className="order_name">{item.product_name}</span>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+            <Chip
+              label="Write a product review"
+              variant="outlined"
+              sx={{
+                p: 1,
+                fontSize: { xs: '12px', sm: '14px' },
+                mr: { sm: 2 },
+              }}
+            />
+            <Chip
+              label="View Product"
+              variant="outlined"
+              sx={{
+                p: 1,
+                fontSize: { xs: '12px', sm: '14px' },
+                mr: { sm: 2 },
+              }}
+              onClick={viewProduct}
+            />
+          </Stack>
+        </Stack>
+      </Box>
+
+      {/* Additional Information Section - 20% */}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'top',
+          justifyContent: 'right',
+          width: { xs: '100%', sm: '25%' }, // 100% on mobile, 20% on larger screens
+          p: 2,
+        }}
+      >
+        <Stack spacing={1} width={'100%'}>
+          <Chip
+            label="Track Package"
+            variant="outlined"
+            sx={{
+              p: 2,
+              fontSize: '14px',
             }}
           />
-        </Box>
+          <Chip
+            label="Write Feedback"
+            variant="outlined"
+            sx={{
+              p: 2,
+              fontSize: '14px',
+            }}
+          />
 
-        {/* Product Info Section */}
-        <Box p={2}>
-          <Stack spacing={1}>
-            <span className="order_name">{item.product_name}</span>
-            <Stack direction={'row'}>
-              <Chip
-                label="Write a product review"
-                variant="outlined"
-                sx={{ mr: 2, p: 1 }}
-                // onClick={handleClick}
-                p={2}
-              />
-              <Chip
-                label="View Product"
-                variant="outlined"
-                sx={{ mr: 2, p: 1 }}
-                // onClick={handleClick}
-                p={2}
-              />
-            </Stack>
-          </Stack>
-        </Box>
-      </Paper>
+          <Chip
+            label="Get product Support"
+            variant="outlined"
+            sx={{
+              p: 2,
+              fontSize: '14px',
+              backgroundColor: '#FFA500', // Orangish-yellow color
+              borderColor: '#FFA500',
+              color: 'black', // Text color for readability
+              '&:hover': {
+                backgroundColor: '#FFB732', // Slightly lighter shade on hover
+              },
+            }}
+          />
+        </Stack>
+      </Box>
     </Box>
   );
 };
