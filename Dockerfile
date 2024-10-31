@@ -32,4 +32,4 @@ EXPOSE 8080
 ENV PORT 8080
 
 # Start NGINX server
-CMD ["npm start"]
+CMD ["npm run start:prod"]
