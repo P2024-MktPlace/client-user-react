@@ -19,11 +19,17 @@ RUN npm run build
 # Use a lightweight server to serve the build
 FROM nginx:alpine
 
+# Remove default NGINX static files to prevent conflicts
+RUN rm -rf /usr/share/nginx/html/*
+
 # Copy the build output to NGINX's html directory
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Expose port 8080 for the server
 EXPOSE 8080
+
+# Configure NGINX to listen on the port expected by the environment
+ENV PORT 8080
 
 # Start NGINX server
 CMD ["nginx", "-g", "daemon off;"]
