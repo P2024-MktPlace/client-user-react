@@ -1,8 +1,6 @@
-import { Box, Divider, Typography, Button } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { useState } from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa'; // FontAwesome Icons
-
-import { EditText, EditTextarea } from 'react-edit-text';
 import 'react-edit-text/dist/index.css'; // Import the default styling
 
 function MyAccount() {

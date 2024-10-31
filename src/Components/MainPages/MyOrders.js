@@ -1,6 +1,5 @@
 import { Box, Stack, Typography, CircularProgress, Alert } from '@mui/material';
 import React, { useState, useEffect } from 'react';
-import SettingMenu from '../MiniComponents/SettingMenu';
 import MyOrderProduct from '../MiniComponents/MyOrderProduct';
 import BASE_API_URL from '../../config';
 
