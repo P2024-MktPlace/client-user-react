@@ -32,4 +32,4 @@ EXPOSE 8080
 ENV PORT 8080
 
 # Start NGINX server
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm start"]
