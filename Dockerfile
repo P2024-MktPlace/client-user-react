@@ -1,10 +1,10 @@
 # Use the official Node.js image as a base image
-FROM node:18 as build
+FROM node:18
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json to install dependencies
 COPY package.json package-lock.json ./
 
 # Install dependencies
@@ -16,20 +16,11 @@ COPY . .
 # Build the application for production
 RUN npm run build
 
-# Use a lightweight server to serve the build
-FROM nginx:alpine
+# Install 'serve' to serve the build directory
+RUN npm install -g serve
 
-# Remove default NGINX static files to prevent conflicts
-RUN rm -rf /usr/share/nginx/html/*
+# Expose a dynamic port if specified, or default to 3000
+EXPOSE ${PORT:-8080}
 
-# Copy the build output to NGINX's html directory
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 8080 for the server
-EXPOSE 8080
-
-# Configure NGINX to listen on the port expected by the environment
-ENV PORT 8080
-
-# Start NGINX server
-CMD ["npm run start:prod"]
+# Start server on specified port or default to 3000
+CMD ["sh", "-c", "serve -s build -l ${PORT:-8080}"]
