@@ -1,10 +1,16 @@
 import { Box, Chip, Divider, Stack, Typography, Grid } from '@mui/material';
 import OrderCard from './OrderCard';
 import DownloadIcon from '@mui/icons-material/Download';
+import React, { useRef } from 'react';
+import Invoice from './Invoice';
 
 const MyOrderProduct = ({ item }) => {
   const data = item.ordproducts;
-  console.log(data);
+  const invoiceRef = useRef(null);
+
+  const handleDownloadInvoice = () => {
+    invoiceRef.current.downloadPDF();
+  };
 
   const bgColor = {
     delivered: '#abffae', // Light green
@@ -52,9 +58,10 @@ const MyOrderProduct = ({ item }) => {
                     icon={<DownloadIcon />}
                     label="Invoice"
                     variant="outlined"
+                    onClick={handleDownloadInvoice}
                     sx={{
                       p: 1,
-                      fontSize: { xs: '12px', sm: '14px' }, // Responsive font size
+                      fontSize: { xs: '12px', sm: '14px' },
                     }}
                   />
                 </Box>
