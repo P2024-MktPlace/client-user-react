@@ -20,7 +20,7 @@ RUN npm run build
 FROM nginx:stable-alpine
 COPY --from=builder /app/build /usr/share/nginx/html
 
-EXPOSE ${PORT:-8080}
+EXPOSE ${PORT}
 
 # Start server on specified port or default to 3000
 CMD ["nginx", "-g", "daemon off;"]
