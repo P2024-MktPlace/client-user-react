@@ -16,11 +16,12 @@ COPY . .
 # Build the application for production
 RUN npm run build
 
-# Install 'serve' to serve the build directory
-RUN npm install -g serve
+# Stage 2: Serve the build with NGINX
+FROM nginx:stable-alpine
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# Expose a dynamic port if specified, or default to 3000
 EXPOSE ${PORT:-8080}
 
 # Start server on specified port or default to 3000
-CMD ["sh", "-c", "serve -s build -l ${PORT:-8080}"]
+CMD ["nginx", "-g", "daemon off;"]
+
