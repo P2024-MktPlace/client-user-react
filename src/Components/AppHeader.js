@@ -56,7 +56,9 @@ function ResponsiveAppBar() {
     setAnchorEl(null); // Close menu
   };
 
-  const handleNavigateProfile = () => {};
+  const handleNavigateProfile = () => {
+    navigate('/profile');
+  };
 
   const handleNavigateOrder = () => {
     navigate('/myorders');

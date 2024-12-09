@@ -1,4 +1,11 @@
-import { Box, Stack, Typography, CircularProgress, Alert } from '@mui/material';
+import {
+  Box,
+  Stack,
+  Typography,
+  CircularProgress,
+  Alert,
+  Divider,
+} from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import MyOrderProduct from '../MiniComponents/MyOrderProduct';
 import BASE_API_URL from '../../config';
@@ -69,13 +76,14 @@ const MyOrders = () => {
       <Box
         sx={{
           display: 'flex',
-          maxWidth: '1400px',
-          width: '90%', // Adjust width relative to the screen size
+          width: '100%', // Makes it responsive
+          maxWidth: '1200px', // Maximum width of 1200px
           flexDirection: 'column',
         }}
       >
         <Box flexBasis="100%" p={2}>
           <span className="settings-heading">My Orders</span>
+          <Divider sx={{ mt: 1, mb: 3 }} />
 
           {orderDetails.length > 0 ? (
             <Stack mt={2} spacing={2}>

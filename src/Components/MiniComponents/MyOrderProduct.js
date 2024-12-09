@@ -1,15 +1,40 @@
-import { Box, Chip, Divider, Stack, Typography, Grid } from '@mui/material';
+import { Box, Chip, Stack, Typography, Grid } from '@mui/material';
 import OrderCard from './OrderCard';
 import DownloadIcon from '@mui/icons-material/Download';
-import React, { useRef } from 'react';
-import Invoice from './Invoice';
+import BASE_API_URL from '../../config';
+import React, { useState } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const MyOrderProduct = ({ item }) => {
   const data = item.ordproducts;
-  const invoiceRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const handleDownloadInvoice = async () => {
+    setIsLoading(true); // Start loading
+    try {
+      const response = await fetch(
+        `${BASE_API_URL}/invoice?order_id=${item.order_id}`,
+        {
+          method: 'GET',
+        }
+      );
 
-  const handleDownloadInvoice = () => {
-    invoiceRef.current.downloadPDF();
+      if (!response.ok) {
+        throw new Error('Failed to fetch invoice. Please try again later.');
+      }
+
+      const data = await response.json();
+
+      if (data.url) {
+        // Open the URL in a new tab
+        window.open(data.url, '_blank');
+      } else {
+        console.error('Invoice URL not found in the response.');
+      }
+    } catch (err) {
+      console.error('Error downloading invoice:', err);
+    } finally {
+      setIsLoading(false); // End loading
+    }
   };
 
   const bgColor = {
@@ -55,10 +80,17 @@ const MyOrderProduct = ({ item }) => {
               >
                 <Box>
                   <Chip
-                    icon={<DownloadIcon />}
-                    label="Invoice"
+                    icon={
+                      isLoading ? (
+                        <CircularProgress size={16} />
+                      ) : (
+                        <DownloadIcon />
+                      )
+                    }
+                    label={isLoading ? 'Loading...' : 'Invoice'}
                     variant="outlined"
                     onClick={handleDownloadInvoice}
+                    disabled={isLoading}
                     sx={{
                       p: 1,
                       fontSize: { xs: '12px', sm: '14px' },

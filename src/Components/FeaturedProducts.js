@@ -10,7 +10,7 @@ function FeaturedProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(BASE_API_URL + '/all_products');
+        const response = await fetch(BASE_API_URL + '/featured_products');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

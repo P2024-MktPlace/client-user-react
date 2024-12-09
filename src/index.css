@@ -63,11 +63,8 @@ body {
 .heading-medium {
   font-family: var(--font-heading);
   word-spacing: 10px;
-  color: var(--primary-color);
-}
-
-.heading-small {
   font-size: 25px;
+  color: var(--primary-color);
 }
 
 .heading-medium {
@@ -310,4 +307,10 @@ body {
   border: 1px solid #d1d1d1;
   padding: 15px;
   border-radius: 15px;
+}
+
+.ship-info {
+  width: 100%;
+  display: block;
+  font-size: medium;
 }

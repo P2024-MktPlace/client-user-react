@@ -8,11 +8,11 @@ import {
   StepLabel,
   Stack,
   CircularProgress,
+  TextField,
 } from '@mui/material';
 import CartCard from './CartCard';
 import BASE_API_URL from '../config';
 import axios from 'axios';
-import AddressComponent from './MiniComponents/AddAddress';
 
 function CheckoutPage() {
   const steps = ['Cart', 'Address', 'Payment'];
@@ -20,30 +20,62 @@ function CheckoutPage() {
   const [priceData, setPriceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [addressData, setAddressData] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [addressData, setAddressData] = useState({
+    address_name: '',
+    address_area: '',
+    address_landmark: '',
+    address_town: '',
+    address_state: '',
+    address_pincode: '',
+    mobile: '',
+  });
 
-  const handlepayment =() =>{
-    const token = localStorage.getItem('token');
-    axios.post(BASE_API_URL + '/payment', { token })
-    .then((response) => {
-      // Assuming the status link is in `response.data.status`
-      const { status } = response.data;
-      if (status) {
-        window.open(status, '_self'); // Open the link in a new tab
-      } 
-    })
-    .catch((error) => {
-      console.error('Error during payment:', error);
-    });
-  }
+  const [isAddressValid, setIsAddressValid] = useState(false);
 
-  const handleAddressClickOpen = () => {
-    setOpen(true);
+  // Validate address fields
+  useEffect(() => {
+    const {
+      address_name,
+      address_area,
+      address_landmark,
+      address_town,
+      address_state,
+      address_pincode,
+      mobile,
+    } = addressData;
+    setIsAddressValid(
+      address_name.trim() &&
+        address_area.trim() &&
+        address_landmark.trim() &&
+        address_town.trim() &&
+        address_state.trim() &&
+        address_pincode.trim() &&
+        mobile
+    );
+  }, [addressData]);
+
+  const handleInputChange = (field, value) => {
+    setAddressData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  const handleAddressClose = () => {
-    setOpen(false);
+  const handlePayment = () => {
+    const token = localStorage.getItem('token');
+    if (isAddressValid && token) {
+      axios
+        .post(BASE_API_URL + '/payment', { token, ...addressData })
+        .then((response) => {
+          const { status } = response.data;
+          if (status) {
+            window.open(status, '_self'); // Open the link in a new tab
+          }
+        })
+        .catch((error) => {
+          console.error('Error during payment:', error);
+        });
+    }
   };
 
   useEffect(() => {
@@ -51,16 +83,13 @@ function CheckoutPage() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const [cartResponse, addressResponse, cartpriceresponse] = await Promise.all([
+          const [cartResponse, cartPriceResponse] = await Promise.all([
             axios.post(BASE_API_URL + '/get_cart_details', { token }),
-            axios.post(BASE_API_URL + '/getaddress', { token }),
             axios.post(BASE_API_URL + '/get_cart_price', { token }),
           ]);
 
           setCartData(cartResponse.data);
-          setAddressData(addressResponse.data);
-          setPriceData(cartpriceresponse.data[0]);
-
+          setPriceData(cartPriceResponse.data[0]);
         } catch (err) {
           setError(err);
         } finally {
@@ -99,16 +128,20 @@ function CheckoutPage() {
     );
   }
 
-  const isAddressAvailable = addressData && addressData.length > 0;
-
   return (
-    <Box p={2} sx={{ width: '100%' }}>
+    <Box
+      p={2}
+      sx={{
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
       {/* Stepper */}
-      <Box 
+      <Box
         p={2}
         sx={{
           width: '100%',
-          maxWidth: '1200px',
+          maxWidth: '1500px',
           margin: '0 auto',
         }}
       >
@@ -126,83 +159,48 @@ function CheckoutPage() {
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
-          gap: '16px',
+          gap: '30px',
+          maxWidth: '1200px',
+          margin: '0 auto',
         }}
       >
         <Box sx={{ flex: 6 }}>
           {/* Address Section */}
+          <span className="heading-small">Shipping Address</span>
           <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            padding: '16px',
-            border: '1px solid #e0e0e0',
-            borderRadius: '8px',
-            backgroundColor: '#fafafa',
-            marginBottom: '16px',
-            width: '100%',
-          }}
-        >
-          {isAddressAvailable ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' }, // column on mobile, row on desktop
-                justifyContent: { xs: 'center', md: 'space-between' }, // align differently on mobile
-                alignItems: { xs: 'flex-start', md: 'center' }, // center items vertically on desktop
-                width: '100%',
-              }}
-            >
-              <Box>
-                <Typography variant="body2">
-                  Deliver to: <strong>{addressData[0].name}, {addressData[0].pincode}</strong>
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {addressData[0].address}, {addressData[0].city}, {addressData[0].state}
-                </Typography>
-              </Box>
-              <Button
+            mt={1}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '15px',
+              padding: '15px',
+              borderRadius: '8px',
+              width: '100%',
+            }}
+          >
+            {[
+              { field: 'address_name', label: 'Name' },
+              { field: 'address_area', label: 'Flat, House No., Building' },
+              { field: 'address_landmark', label: 'Landmark' },
+              { field: 'address_pincode', label: 'Pincode' },
+              { field: 'address_town', label: 'Town/City' },
+              { field: 'address_state', label: 'State' },
+              { field: 'mobile', label: 'Phone Number' },
+            ].map(({ field, label }, index) => (
+              <TextField
+                key={index}
+                id={field}
+                label={label}
+                size="small"
                 variant="outlined"
-                color="error"
-                sx={{ mt: { xs: 2, md: 0 } }} // margin-top only on mobile
-                onClick={handleAddressClickOpen}
-              >
-                Change Address
-              </Button>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' }, // column on mobile, row on desktop
-                justifyContent: { xs: 'center', md: 'space-between' },
-                alignItems: { xs: 'flex-start', md: 'center' },
-                width: '100%',
-              }}
-            >
-              <Typography variant="body2" color="error">
-                No address available. Please add an address to proceed.
-              </Typography>
-              <Button
-                variant="outlined"
-                color="error"
-                sx={{ mt: { xs: 2, md: 0 } }} // margin-top only on mobile
-                onClick={handleAddressClickOpen}
-              >
-                Add Address
-              </Button>
-            </Box>
-          )}
-
-          {/* Address Modal */}
-          <AddressComponent open={open} handleClose={handleAddressClose} />
-        </Box>
-
-
-
-          <Stack>
-            <span className='heading-small'>Items in bag</span>
+                fullWidth
+                value={addressData[field]}
+                onChange={(e) => handleInputChange(field, e.target.value)}
+              />
+            ))}
+          </Box>
+          <Stack mt={2}>
+            <span className="heading-small">Items in Bag</span>
             {cartData.map((item) => (
               <CartCard key={item.id} item={item} />
             ))}
@@ -210,51 +208,49 @@ function CheckoutPage() {
         </Box>
 
         <Box sx={{ flex: 4 }}>
-          {/* Price Details Section */}
+          <span className="heading-small">
+            Price Details ({cartData?.length || 0} Item
+            {cartData?.length > 1 ? 's' : ''})
+          </span>
+
           <Box
             sx={{
-              border: '1px solid #e0e0e0',
-              padding: 2,
-              borderRadius: 2,
-              backgroundColor: '#fff',
+              pt: 3,
             }}
           >
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-              PRICE DETAILS ({cartData?.length || 0} Item{cartData?.length > 1 ? 's' : ''})
-            </Typography>
-
-            <Stack spacing={1} mt={2}>
-            
-            <Stack direction="row" justifyContent="space-between">
-              <Typography>Total MRP</Typography>
-              <Typography>₹{priceData.subtotal.toFixed(2)}</Typography>
+            {/* Price Breakdown */}
+            <Stack spacing={1}>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography>Total MRP</Typography>
+                <Typography>₹{priceData.subtotal.toFixed(2)}</Typography>
+              </Stack>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography>Shipping Fee</Typography>
+                <Typography>
+                  {priceData.shipping_charges === 0
+                    ? 'FREE'
+                    : `₹${priceData.shipping_charges.toFixed(2)}`}
+                </Typography>
+              </Stack>
             </Stack>
 
-            <Stack direction="row" justifyContent="space-between">
-              <Typography>Discount on MRP</Typography>
-              <Typography sx={{ color: 'green' }}>- ₹{priceData.saved.toFixed(2)}</Typography>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              sx={{ mt: 2 }}
+            >
+              <Typography>Total Amount</Typography>
+              <Typography>₹{priceData.total.toFixed(2)}</Typography>
             </Stack>
-
-            <Stack direction="row" justifyContent="space-between">
-              <Typography>Shipping Fee</Typography>
-              <Typography>{priceData.shipping_charges === 0 ? 'FREE' : `₹${priceData.shipping_charges.toFixed(2)}`}</Typography>
-            </Stack>
-          </Stack>
-
-          <Stack direction="row" justifyContent="space-between" mt={2} sx={{ fontWeight: 'bold' }}>
-            <Typography>Total Amount</Typography>
-            <Typography>₹{priceData.total.toFixed(2)}</Typography>
-          </Stack>
 
             <Button
               variant="contained"
-              color="error"
               fullWidth
-              onClick={handlepayment}
-              sx={{ mt: 2, borderRadius: 1 }}
-              disabled={!isAddressAvailable} // Disable if no address
+              onClick={handlePayment}
+              sx={{ mt: 4 }}
+              disabled={!isAddressValid}
             >
-              PLACE ORDER
+              Place Order
             </Button>
           </Box>
         </Box>

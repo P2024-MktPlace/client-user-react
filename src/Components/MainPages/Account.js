@@ -1,399 +1,126 @@
-import { Box, Divider } from '@mui/material';
-import { useState } from 'react';
+import {
+  Box,
+  Button,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { useState, useEffect } from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa'; // FontAwesome Icons
-import 'react-edit-text/dist/index.css'; // Import the default styling
+import BASE_API_URL from '../../config';
 
 function MyAccount() {
-  const [isEmailVerified, setEmailVerified] = useState(false);
-  const [isPhoneVerified, setPhoneVerified] = useState(false);
+  const [userData, setUserData] = useState(null);
 
-  const handleVerifyEmail = () => {
-    // Logic to verify email
-    setEmailVerified(true);
-  };
+  // Fetch user data when the component mounts
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token');
 
-  const handleVerifyPhone = () => {
-    // Logic to verify phone
-    setPhoneVerified(true);
-  };
+        const response = await fetch(`${BASE_API_URL}/user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        });
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState('hello');
-  const [tempValue, setTempValue] = useState('hello');
-  const [loading, setLoading] = useState(false);
+        const data = await response.json(); // Wait for the JSON response
 
-  // Handler to save changes and send to API
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      //   await axios.post(apiEndpoint, { updatedValue: tempValue });
-      //   setValue(tempValue);
-    } catch (error) {
-      console.error('Failed to save changes:', error);
-    } finally {
-      setLoading(false);
-      setIsEditing(false);
-    }
-  };
+        console.log(data); // Log the full response data
 
-  // Cancel changes and revert to original value
-  const handleCancel = () => {
-    setTempValue(value);
-    setIsEditing(false);
-  };
+        // If the response is an array and you're looking to set user data from the first element
+        setUserData(data[0]); // Assuming the response is an array and you want the first user
+        console.log('Hello');
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
-    <Box p={3} sx={{ width: '100%', margin: 'auto' }}>
-      <span className="settings-heading">My Profile</span>
-      <Divider sx={{ mb: 2 }} />
+    <Box display="flex" justifyContent="center" width="100%">
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%', // Makes it responsive
+          maxWidth: '1200px', // Maximum width of 1200px
+          flexDirection: 'column',
+        }}
+      >
+        <Box flexBasis="100%" p={2}>
+          <span className="settings-heading">My Profile</span>
+          <Divider sx={{ mt: 1, mb: 3 }} />
 
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <span className="settings-subject">Name:</span>
-          <div style={{ display: 'inline-block' }}>
-            {isEditing ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  border: '1px solid #4c9aff',
-                  padding: '6px 8px',
-                  borderRadius: '4px',
-                  boxShadow: '0 0 3px rgba(76, 154, 255, 0.5)',
-                  backgroundColor: 'white',
-                }}
-              >
-                <input
-                  type="text"
-                  value={tempValue}
-                  onChange={(e) => setTempValue(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '5px 10px',
-                    border: 'none',
-                    outline: 'none',
-                    fontSize: '14px',
-                    borderRadius: '4px',
-                  }}
-                  disabled={loading}
-                  autoFocus
-                />
-                <div style={{ display: 'flex', marginLeft: '8px' }}>
-                  <button
-                    onClick={handleSave}
-                    disabled={loading}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#36B37E',
-                      marginRight: '5px',
-                      fontSize: '16px',
-                    }}
-                  >
-                    <FaCheck />
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#FF5630',
-                      fontSize: '16px',
-                    }}
-                  >
-                    <FaTimes />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div
-                onClick={() => setIsEditing(true)}
-                style={{
-                  padding: '6px 12px',
-                  border: '1px solid transparent',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  minWidth: '200px',
-                  backgroundColor: '#F4F5F7',
-                  transition: 'border 0.2s, background-color 0.2s',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.border = '1px solid #DFE1E6')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.border = '1px solid transparent')
-                }
-              >
-                {value || (
-                  <span style={{ color: '#6B778C' }}>Click to edit</span>
-                )}
-              </div>
-            )}
-          </div>
-        </Box>
-      </Box>
+          {userData && (
+            <Stack spacing={3}>
+              {/* Display a message if both are unverified */}
+              {!userData.isemailverified && !userData.isphoneverified && (
+                <Typography variant="body2" color="error">
+                  Both email and phone are not verified. Please verify your
+                  account.
+                </Typography>
+              )}
 
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <span className="settings-subject">Email ID:</span>
-          <div style={{ display: 'inline-block' }}>
-            {isEditing ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  border: '1px solid #4c9aff',
-                  padding: '6px 8px',
-                  borderRadius: '4px',
-                  boxShadow: '0 0 3px rgba(76, 154, 255, 0.5)',
-                  backgroundColor: 'white',
-                }}
-              >
-                <input
-                  type="text"
-                  value={tempValue}
-                  onChange={(e) => setTempValue(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '5px 10px',
-                    border: 'none',
-                    outline: 'none',
-                    fontSize: '14px',
-                    borderRadius: '4px',
-                  }}
-                  disabled={loading}
-                  autoFocus
-                />
-                <div style={{ display: 'flex', marginLeft: '8px' }}>
-                  <button
-                    onClick={handleSave}
-                    disabled={loading}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#36B37E',
-                      marginRight: '5px',
-                      fontSize: '16px',
-                    }}
-                  >
-                    <FaCheck />
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#FF5630',
-                      fontSize: '16px',
-                    }}
-                  >
-                    <FaTimes />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div
-                onClick={() => setIsEditing(true)}
-                style={{
-                  padding: '6px 12px',
-                  border: '1px solid transparent',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  minWidth: '200px',
-                  backgroundColor: '#F4F5F7',
-                  transition: 'border 0.2s, background-color 0.2s',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.border = '1px solid #DFE1E6')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.border = '1px solid transparent')
-                }
-              >
-                {value || (
-                  <span style={{ color: '#6B778C' }}>Click to edit</span>
-                )}
-              </div>
-            )}
-          </div>
-        </Box>
-      </Box>
+              {/* Full Name */}
+              <TextField
+                fullWidth
+                id="full_name"
+                label="Full Name"
+                defaultValue={userData.name}
+                variant="outlined"
+                disabled
+              />
 
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <span className="settings-subject">Phone number:</span>
-          <div style={{ display: 'inline-block' }}>
-            {isEditing ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  border: '1px solid #4c9aff',
-                  padding: '6px 8px',
-                  borderRadius: '4px',
-                  boxShadow: '0 0 3px rgba(76, 154, 255, 0.5)',
-                  backgroundColor: 'white',
-                }}
-              >
-                <input
-                  type="text"
-                  value={tempValue}
-                  onChange={(e) => setTempValue(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '5px 10px',
-                    border: 'none',
-                    outline: 'none',
-                    fontSize: '14px',
-                    borderRadius: '4px',
-                  }}
-                  disabled={loading}
-                  autoFocus
+              {/* Email and Phone Section */}
+              <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
+                <TextField
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  defaultValue={userData.email}
+                  variant="outlined"
+                  disabled
                 />
-                <div style={{ display: 'flex', marginLeft: '8px' }}>
-                  <button
-                    onClick={handleSave}
-                    disabled={loading}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#36B37E',
-                      marginRight: '5px',
-                      fontSize: '16px',
-                    }}
-                  >
-                    <FaCheck />
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#FF5630',
-                      fontSize: '16px',
-                    }}
-                  >
-                    <FaTimes />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div
-                onClick={() => setIsEditing(true)}
-                style={{
-                  padding: '6px 12px',
-                  border: '1px solid transparent',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  minWidth: '200px',
-                  backgroundColor: '#F4F5F7',
-                  transition: 'border 0.2s, background-color 0.2s',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.border = '1px solid #DFE1E6')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.border = '1px solid transparent')
-                }
-              >
-                {value || (
-                  <span style={{ color: '#6B778C' }}>Click to edit</span>
-                )}
-              </div>
-            )}
-          </div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={userData.isemailverified}
+                  onClick={() => alert('Email verification logic here')}
+                >
+                  {userData.isemailverified ? <FaCheck /> : <FaTimes />} Verify
+                </Button>
+              </Box>
+
+              <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
+                <TextField
+                  fullWidth
+                  id="phone"
+                  label="Phone number"
+                  defaultValue={`+91 ${userData.phone}`}
+                  variant="outlined"
+                  disabled
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={userData.isphoneverified}
+                  onClick={() => alert('Phone verification logic here')}
+                >
+                  {userData.isphoneverified ? <FaCheck /> : <FaTimes />} Verify
+                </Button>
+              </Box>
+            </Stack>
+          )}
         </Box>
       </Box>
     </Box>
-
-    //     <div style={{ display: 'inline-block' }}>
-    //     {isEditing ? (
-    //       <div
-    //         style={{
-    //           display: 'flex',
-    //           alignItems: 'center',
-    //           border: '1px solid #4c9aff',
-    //           padding: '6px 8px',
-    //           borderRadius: '4px',
-    //           boxShadow: '0 0 3px rgba(76, 154, 255, 0.5)',
-    //           backgroundColor: 'white',
-    //         }}
-    //       >
-    //         <input
-    //           type="text"
-    //           value={tempValue}
-    //           onChange={(e) => setTempValue(e.target.value)}
-    //           style={{
-    //             flex: 1,
-    //             padding: '5px 10px',
-    //             border: 'none',
-    //             outline: 'none',
-    //             fontSize: '14px',
-    //             borderRadius: '4px',
-    //           }}
-    //           disabled={loading}
-    //           autoFocus
-    //         />
-    //         <div style={{ display: 'flex', marginLeft: '8px' }}>
-    //           <button
-    //             onClick={handleSave}
-    //             disabled={loading}
-    //             style={{
-    //               background: 'none',
-    //               border: 'none',
-    //               cursor: 'pointer',
-    //               color: '#36B37E',
-    //               marginRight: '5px',
-    //               fontSize: '16px',
-    //             }}
-    //           >
-    //             <FaCheck />
-    //           </button>
-    //           <button
-    //             onClick={handleCancel}
-    //             style={{
-    //               background: 'none',
-    //               border: 'none',
-    //               cursor: 'pointer',
-    //               color: '#FF5630',
-    //               fontSize: '16px',
-    //             }}
-    //           >
-    //             <FaTimes />
-    //           </button>
-    //         </div>
-    //       </div>
-    //     ) : (
-    //       <div
-    //         onClick={() => setIsEditing(true)}
-    //         style={{
-    //           padding: '6px 12px',
-    //           border: '1px solid transparent',
-    //           borderRadius: '4px',
-    //           cursor: 'pointer',
-    //           minWidth: '200px',
-    //           backgroundColor: '#F4F5F7',
-    //           transition: 'border 0.2s, background-color 0.2s',
-    //         }}
-    //         onMouseEnter={(e) =>
-    //           (e.currentTarget.style.border = '1px solid #DFE1E6')
-    //         }
-    //         onMouseLeave={(e) =>
-    //           (e.currentTarget.style.border = '1px solid transparent')
-    //         }
-    //       >
-    //         {value || (
-    //           <span style={{ color: '#6B778C' }}>Click to edit</span>
-    //         )}
-    //       </div>
-    //     )}
-    //   </div>
   );
 }
 

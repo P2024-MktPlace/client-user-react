@@ -179,9 +179,10 @@ const ProductDetail = () => {
             </span> */}
           </Box>
           <Box>
-            <span variant="body1" className="product-description">
-              {product.product_description}
-            </span>
+            <div
+              className="product-description"
+              dangerouslySetInnerHTML={{ __html: product.product_description }}
+            ></div>
           </Box>
           <Box>
             <FormControl sx={{ minWidth: '120px' }}>

@@ -1,5 +1,4 @@
-// config.js
-import process from 'process';
-const BASE_API_URL = 'http://localhost:8080';
+const BASE_API_URL =
+  'https://my-spring-boot-app-381139703931.us-central1.run.app';
 
 export default BASE_API_URL;
