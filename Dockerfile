@@ -1,27 +1,30 @@
-# Use the official Node.js image as a base image
-FROM node:18-alpine AS builder
+# Step 1: Build the React application
+FROM node:18-slim AS build
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to install dependencies
+# Copy package.json and install dependencies
 COPY package.json package-lock.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of your application code
+# Copy the rest of the application and build it
 COPY . .
+RUN npm run build --production
 
-# Build the application for production
-RUN npm run build
+# Remove source map files (if they exist)
+RUN rm -rf /app/build/static/js/*.map /app/build/static/css/*.map
 
-# Stage 2: Serve the build with NGINX
-FROM nginx:stable-alpine
-COPY --from=builder /app/build /usr/share/nginx/html
+# Step 2: Serve the app using NGINX
+FROM nginx:alpine
 
-EXPOSE ${PORT}
+# Copy the React build to the NGINX default directory
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Start server on specified port or default to 3000
+# Copy custom NGINX configuration
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 8080 for Cloud Run
+EXPOSE 8080
+
+# Start NGINX to serve the build folder
 CMD ["nginx", "-g", "daemon off;"]
-
