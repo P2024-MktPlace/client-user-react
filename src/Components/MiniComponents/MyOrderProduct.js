@@ -1,9 +1,27 @@
-import { Box, Chip, Stack, Typography, Grid } from '@mui/material';
+import { Box, Chip, Stack, Typography, Grid, Divider } from '@mui/material';
 import OrderCard from './OrderCard';
 import DownloadIcon from '@mui/icons-material/Download';
 import BASE_API_URL from '../../config';
 import React, { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
+import { styled } from '@mui/material/styles';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+
+const CustomWidthTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 500,
+  },
+});
+
+const NoMaxWidthTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 'none',
+  },
+});
 
 const MyOrderProduct = ({ item }) => {
   const data = item.ordproducts;
@@ -59,7 +77,7 @@ const MyOrderProduct = ({ item }) => {
           <Grid container spacing={2} alignItems="center">
             {/* Order ID Section */}
             <Grid item xs={12} sm={6}>
-              <Typography
+              <span
                 className="myorder-orderno"
                 sx={{
                   textAlign: 'left',
@@ -67,7 +85,7 @@ const MyOrderProduct = ({ item }) => {
                 }}
               >
                 # {item.order_id}
-              </Typography>
+              </span>
             </Grid>
 
             {/* Action Section */}
@@ -78,6 +96,19 @@ const MyOrderProduct = ({ item }) => {
                 justifyContent={{ xs: 'center', sm: 'flex-end' }} // Center-align on mobile, right-align on larger screens
                 alignItems="center"
               >
+                <Box>
+                  <Tooltip title={item.address}>
+                    <Typography
+                      sx={{
+                        p: 1,
+                        fontWeight: 'bold',
+                        fontSize: { xs: '12px', sm: '14px' }, // Responsive size
+                      }}
+                    >
+                      SHIP TO
+                    </Typography>
+                  </Tooltip>
+                </Box>
                 <Box>
                   <Chip
                     icon={
@@ -126,14 +157,16 @@ const MyOrderProduct = ({ item }) => {
           </Box>
         </Box>
 
-        <Stack mt={2} p={2} spacing={2}>
+        <Box mt={1}>
+          <Divider />
+        </Box>
+        <Stack p={2} spacing={2}>
           {data.map((product) => (
             <OrderCard item={product} />
           ))}
         </Stack>
         {/* Total Amount Section */}
         <Box
-          mt={2}
           display="flex"
           alignItems="center"
           justifyContent="space-between"

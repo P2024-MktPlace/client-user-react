@@ -82,7 +82,7 @@ const MyOrders = () => {
         }}
       >
         <Box flexBasis="100%" p={2}>
-          <span className="settings-heading">My Orders</span>
+          <span className="settings-heading">Your Orders</span>
           <Divider sx={{ mt: 1, mb: 3 }} />
 
           {orderDetails.length > 0 ? (

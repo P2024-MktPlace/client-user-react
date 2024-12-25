@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  Stack,
-  IconButton,
-  Chip,
-  Divider,
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import { Box, Typography, Stack, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import BASE_API_URL from '../config';
@@ -15,6 +7,8 @@ import BASE_API_URL from '../config';
 const CartItem = ({ item, onQuantityChangeSuccess }) => {
   const [thumbnail, setThumbnail] = useState('');
   const [quantity, setQuantity] = useState(item.quantity);
+
+  console.log(item);
 
   useEffect(() => {
     setThumbnail(item.thumbnail.split(',')[0]);
@@ -56,13 +50,8 @@ const CartItem = ({ item, onQuantityChangeSuccess }) => {
     setQuantity(quantity - 1);
   };
 
-  const handleBoxClick = () => {
-    // Handle Edit Icon click
-    alert('Edit item functionality coming soon!');
-  };
-
   return (
-    <Box sx={{ p: 2, border: '1px solid #ddd', borderRadius: 2, mb: 2 }}>
+    <Box sx={{ p: 1, border: '1px solid #ddd', borderRadius: 2, mb: 2 }}>
       <Stack direction="row" spacing={2}>
         {/* Product Thumbnail */}
         <Box
@@ -71,7 +60,6 @@ const CartItem = ({ item, onQuantityChangeSuccess }) => {
             height: 80,
             overflow: 'hidden',
             borderRadius: 1,
-            border: '1px solid #eee',
             flexShrink: 0,
           }}
         >
@@ -84,11 +72,9 @@ const CartItem = ({ item, onQuantityChangeSuccess }) => {
 
         <Stack sx={{ flex: 1 }}>
           {/* Product Info */}
-          <span className="order_name">
-            {item.category || 'SYNTHESISER MODULES'}
-          </span>
-
-          <span className="cart-title">{item.product_title}</span>
+          <span className="order_prodid">SKU : {item.product_id}</span>
+          <span className="order_name">{item.product_title}</span>
+          {/* <span className="cart-category">{item.category}</span> */}
 
           <Stack direction="row" spacing={1} mt={2} alignItems="center">
             <Box
