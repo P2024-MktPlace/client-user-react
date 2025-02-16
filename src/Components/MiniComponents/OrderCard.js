@@ -120,7 +120,7 @@ const OrderCard = ({ item }) => {
         }}
       >
         <Stack spacing={1} width={'100%'}>
-          <Chip
+          {/* <Chip
             label="Track Package"
             variant="outlined"
             onClick={handleOpen}
@@ -128,7 +128,7 @@ const OrderCard = ({ item }) => {
               p: 2,
               fontSize: '14px',
             }}
-          />
+          /> */}
 
           {/* <Chip
             label="Get product Support"
@@ -148,80 +148,7 @@ const OrderCard = ({ item }) => {
       </Box>
 
       {/* Modal Component */}
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 600,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 3,
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h6" component="h2" gutterBottom>
-            Track Order
-          </Typography>
-          <Divider />
-          <Box>
-            <Box p={1}>
-              <span className="ship-info">Delivery Service : Indian Post</span>
-              <span className="ship-info">In Transit</span>
-              <span className="ship-info">Estimated date of Delivery</span>
-            </Box>
-            <Divider />
-            <Box mt={1}>
-              <span className="order_name">Timeline History</span>
-
-              <Timeline
-                sx={{
-                  [`& .${timelineItemClasses.root}:before`]: {
-                    flex: 0,
-                    padding: 1,
-                    marginTop: 1,
-                  },
-                }}
-              >
-                <Timeline>
-                  <TimelineItem>
-                    <TimelineSeparator>
-                      <TimelineDot />
-                      <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                        Time date time
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: 'gray' }}>
-                        product_description
-                      </Typography>
-                    </TimelineContent>
-                  </TimelineItem>
-                  <TimelineItem>
-                    <TimelineSeparator>
-                      <TimelineDot />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                        Time date time
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: 'gray' }}>
-                        product_description
-                      </Typography>
-                    </TimelineContent>
-                  </TimelineItem>
-                </Timeline>
-              </Timeline>
-            </Box>
-          </Box>
-          <Button onClick={handleClose} variant="contained">
-            Close
-          </Button>
-        </Box>
-      </Modal>
+   
     </Box>
   );
 };
